@@ -1,19 +1,30 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity 0.7.3;
+
+import "@openzeppelin/contracts/math/SafeMath.sol";
 
 contract BridgeDeposit {
+    using SafeMath for uint;
 
     address private owner;
-    uint256 private maxAmount;
-    bool private canReceive;
+    uint256 private maxDepositAmount;
+    uint256 private maxBalance;
+    bool private canReceiveDeposit;
 
-    constructor(uint256 _maxAmount, bool _canReceive) {
+    constructor(
+        uint256 _maxDepositAmount,
+        uint256 _maxBalance,
+        bool _canReceiveDeposit
+    ) {
         owner = msg.sender;
-        maxAmount = _maxAmount;
-        canReceive = _canReceive;
-        emit OwnerSet(address(0), owner);
-        emit CanReceiveSet(_canReceive);
+        maxDepositAmount = _maxDepositAmount;
+        maxBalance = _maxBalance;
+        canReceiveDeposit = _canReceiveDeposit;
+        emit OwnerSet(address(0), msg.sender);
+        emit MaxDepositAmountSet(0, _maxDepositAmount);
+        emit MaxBalanceSet(0, _maxBalance);
+        emit CanReceiveDepositSet(_canReceiveDeposit);
     }
 
     // Send the contract's balance to the owner
@@ -26,59 +37,75 @@ contract BridgeDeposit {
     function destroy() public isOwner {
         emit Destructed(owner, address(this).balance);
         selfdestruct(payable(owner));
-
     }
 
-    // Receive function which reverts if amount > maxAmount and canReceive = false
-    receive() external payable isLowerThanMaxAmount isReceiving{
+    // Receive function which reverts if amount > maxDepositAmount and canReceiveDeposit = false
+    receive() external payable isLowerThanMaxDepositAmount canReceive isLowerThanMaxBalance {
         emit EtherReceived(msg.sender, msg.value);
     }
 
     // Setters
-    function setMaxAmount(uint256 _maxAmount) public isOwner {
-        emit MaxAmountSet(maxAmount, _maxAmount);
-        maxAmount = _maxAmount;
+    function setMaxAmount(uint256 _maxDepositAmount) public isOwner {
+        emit MaxDepositAmountSet(maxDepositAmount, _maxDepositAmount);
+        maxDepositAmount = _maxDepositAmount;
     }
+
     function setOwner(address newOwner) public isOwner {
         emit OwnerSet(owner, newOwner);
         owner = newOwner;
     }
-    function setCanReceive(bool _canReceive) public isOwner {
-        emit CanReceiveSet(_canReceive);
-        canReceive = _canReceive;
+
+    function setCanReceiveDeposit(bool _canReceiveDeposit) public isOwner {
+        emit CanReceiveDepositSet(_canReceiveDeposit);
+        canReceiveDeposit = _canReceiveDeposit;
+    }
+
+    function setMaxBalance(uint256 _maxBalance) public isOwner {
+        emit MaxBalanceSet(maxBalance, _maxBalance);
+        maxBalance = _maxBalance;
     }
 
     // Getters
-    function getMaxAmount() external view returns (uint256) {
-        return maxAmount;
+    function getMaxDepositAmount() external view returns (uint256) {
+        return maxDepositAmount;
     }
+
+    function getMaxBalance() external view returns (uint256) {
+        return maxBalance;
+    }
+
     function getOwner() external view returns (address) {
         return owner;
     }
-    function getCanReceive() external view returns (bool) {
-        return canReceive;
+
+    function getCanReceiveDeposit() external view returns (bool) {
+        return canReceiveDeposit;
     }
 
     // Modifiers
-    modifier isLowerThanMaxAmount() {
-        require(msg.value <= maxAmount, "Amount is too big");
+    modifier isLowerThanMaxDepositAmount() {
+        require(msg.value <= maxDepositAmount, "Deposit amount is too big");
         _;
     }
     modifier isOwner() {
         require(msg.sender == owner, "Caller is not owner");
         _;
     }
-    modifier isReceiving() {
-        require(canReceive == true, "Contract is not allowed to receive ether");
+    modifier canReceive() {
+        require(canReceiveDeposit == true, "Contract is not allowed to receive ether");
+        _;
+    }
+    modifier isLowerThanMaxBalance() {
+        require(address(this).balance <= maxBalance, "Contract reached the max balance allowed");
         _;
     }
 
     // Events
     event OwnerSet(address indexed oldOwner, address indexed newOwner);
-    event MaxAmountSet(uint256 previousAmount, uint256 newAmount);
-    event CanReceiveSet(bool canReceive);
+    event MaxDepositAmountSet(uint256 previousAmount, uint256 newAmount);
+    event CanReceiveDepositSet(bool canReceiveDeposit);
+    event MaxBalanceSet(uint256 previousBalance, uint256 newBalance);
     event Rugged(address indexed owner, uint256 balance);
     event EtherReceived(address indexed emitter, uint256 amount);
     event Destructed(address indexed owner, uint256 amount);
-
 }

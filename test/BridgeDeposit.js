@@ -10,6 +10,7 @@ describe('BridgeDeposit contract', function () {
 	let addrs;
 
 	const defaultMaxAmount = 1;
+	const defaultMaxBalance = 2;
 	const defaultCanReceive = true;
 	const provider = ethers.provider;
 
@@ -18,6 +19,7 @@ describe('BridgeDeposit contract', function () {
 		[owner, addr1, addr2, ...addrs] = await ethers.getSigners();
 		BridgeDepositInstance = await BridgeDeposit.deploy(
 			ethers.utils.parseEther(defaultMaxAmount.toString()),
+			ethers.utils.parseEther(defaultMaxBalance.toString()),
 			defaultCanReceive
 		);
 	});
@@ -28,11 +30,11 @@ describe('BridgeDeposit contract', function () {
 			expect(contractOwner).to.equal(owner.address);
 		});
 		it('Should set the correct max amount', async function () {
-			const maxAmount = await BridgeDepositInstance.getMaxAmount();
+			const maxAmount = await BridgeDepositInstance.getMaxDepositAmount();
 			expect(Number(ethers.utils.formatEther(maxAmount))).to.equal(defaultMaxAmount);
 		});
 		it('Should set canReceive to true', async function () {
-			const canReceive = await BridgeDepositInstance.getCanReceive();
+			const canReceive = await BridgeDepositInstance.getCanReceiveDeposit();
 			expect(canReceive).to.equal(defaultCanReceive);
 		});
 	});
@@ -43,15 +45,20 @@ describe('BridgeDeposit contract', function () {
 				await BridgeDepositInstance.connect(owner).setOwner(addr1.address);
 				expect(await BridgeDepositInstance.getOwner()).to.equal(addr1.address);
 			});
-			it('Should set a new max amount', async function () {
+			it('Should set a new max deposit amount', async function () {
 				const newMaxAmount = ethers.utils.parseEther('2.5');
 				await BridgeDepositInstance.connect(owner).setMaxAmount(newMaxAmount);
-				expect(await BridgeDepositInstance.getMaxAmount()).to.equal(newMaxAmount);
+				expect(await BridgeDepositInstance.getMaxDepositAmount()).to.equal(newMaxAmount);
 			});
-			it('Should set canReceive', async function () {
+			it('Should set canReceiveDeposit', async function () {
 				const canReceive = false;
-				await BridgeDepositInstance.connect(owner).setCanReceive(canReceive);
-				expect(await BridgeDepositInstance.getCanReceive()).to.equal(canReceive);
+				await BridgeDepositInstance.connect(owner).setCanReceiveDeposit(canReceive);
+				expect(await BridgeDepositInstance.getCanReceiveDeposit()).to.equal(canReceive);
+			});
+			it('Should set a new max balance', async function () {
+				const newMaxBalance = ethers.utils.parseEther('5');
+				await BridgeDepositInstance.connect(owner).setMaxBalance(newMaxBalance);
+				expect(await BridgeDepositInstance.getMaxBalance()).to.equal(newMaxBalance);
 			});
 		});
 		describe('When msg.sender is not owner', function () {
@@ -66,9 +73,14 @@ describe('BridgeDeposit contract', function () {
 				).to.be.revertedWith('Caller is not owner');
 			});
 			it('Should not set canReceive', async function () {
-				expect(BridgeDepositInstance.connect(addr1).setCanReceive(false)).to.be.revertedWith(
+				expect(BridgeDepositInstance.connect(addr1).setCanReceiveDeposit(false)).to.be.revertedWith(
 					'Caller is not owner'
 				);
+			});
+			it('Should not set a new max balance', async function () {
+				expect(
+					BridgeDepositInstance.connect(addr1).setMaxBalance(ethers.utils.parseEther('1.5'))
+				).to.be.revertedWith('Caller is not owner');
 			});
 		});
 	});
@@ -79,10 +91,26 @@ describe('BridgeDeposit contract', function () {
 					to: BridgeDepositInstance.address,
 					value: ethers.utils.parseEther('10'),
 				})
-			).to.be.revertedWith('Amount is too big');
+			).to.be.revertedWith('Deposit amount is too big');
 		});
-		it('Should revert if canReceive = false', async function () {
-			await BridgeDepositInstance.connect(owner).setCanReceive(false);
+		it('Should revert if contract balance + msg.value > maxBalance ', async function () {
+			await owner.sendTransaction({
+				to: BridgeDepositInstance.address,
+				value: ethers.utils.parseEther('1'),
+			});
+			await owner.sendTransaction({
+				to: BridgeDepositInstance.address,
+				value: ethers.utils.parseEther('1'),
+			});
+			expect(
+				owner.sendTransaction({
+					to: BridgeDepositInstance.address,
+					value: ethers.utils.parseEther('1'),
+				})
+			).to.be.revertedWith('Contract reached the max balance allowed');
+		});
+		it('Should revert if canReceiveDeposit = false', async function () {
+			await BridgeDepositInstance.connect(owner).setCanReceiveDeposit(false);
 			expect(
 				addr1.sendTransaction({
 					to: BridgeDepositInstance.address,
