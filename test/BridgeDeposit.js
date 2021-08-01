@@ -127,9 +127,11 @@ describe('BridgeDeposit contract', function () {
 			expect(await provider.getBalance(BridgeDepositInstance.address)).to.equal(amount);
 		});
 	});
-	describe('When the rug function is called', function () {
+	describe('When the WithdrawBalance function is called', function () {
 		it('Should revert msg.sender != owner', async function () {
-			expect(BridgeDepositInstance.connect(addr1).rug()).to.be.revertedWith('Caller is not owner');
+			expect(BridgeDepositInstance.connect(addr1).withdrawBalance()).to.be.revertedWith(
+				'Caller is not owner'
+			);
 		});
 		it('Should send the contract balance to owner', async function () {
 			const amount = ethers.utils.parseEther('0.55');
@@ -138,7 +140,7 @@ describe('BridgeDeposit contract', function () {
 				to: BridgeDepositInstance.address,
 				value: amount,
 			});
-			const tx = await BridgeDepositInstance.connect(owner).rug();
+			const tx = await BridgeDepositInstance.connect(owner).withdrawBalance();
 			const receipt = await provider.getTransactionReceipt(tx.hash);
 
 			const logs = receipt.logs.map((l) => BridgeDeposit.interface.parseLog(l));

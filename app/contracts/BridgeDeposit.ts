@@ -1,4 +1,4 @@
-export const bridgeDeposit = {
+export const contract = {
   address: "0x10d06F6277EecD04dF1257d27BF5bCCce7921207",
   abi: [
     {

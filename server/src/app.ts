@@ -16,13 +16,16 @@ const TIMEOUT = 60 * 1000;
 
 const app: Application = express();
 
+const startBridge = () => {
+  getLayerOneTransfers();
+  checkLayerOneConfirmations();
+  processLayerOneTransactionsToL2();
+};
+
 initializeDB()
   .then(() => {
-    setInterval(() => {
-      getLayerOneTransfers();
-      checkLayerOneConfirmations();
-      processLayerOneTransactionsToL2();
-    }, TIMEOUT);
+    setInterval(startBridge, TIMEOUT);
+    startBridge();
     // app.use(bodyParser.urlencoded({ extended: true }));
     // app.use('/api/address-data', bodyParser.json());
     // app.use(cors({ origin: true, credentials: true }));

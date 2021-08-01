@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import bridgeDeposit from "./contracts/BridgeDeposit";
+import { bridgeDeposit } from "./contracts/BridgeDeposit";
 import { getDB } from "./mongoConnector";
 import { ObjectID } from "mongodb";
 
@@ -39,12 +39,14 @@ const getProviderL1 = (): ethers.providers.InfuraProvider => {
 
 export const getLayerOneTransfers = async () => {
   try {
+    if (!process.env.LAYER_2_WALLET_PK) return;
     const providerL1 = getProviderL1();
     const bridgeDepositContract = new ethers.Contract(
       bridgeDeposit.address,
       bridgeDeposit.abi,
       providerL1
     );
+    const wallet = new ethers.Wallet(process.env.LAYER_2_WALLET_PK, providerL1);
 
     const filters = bridgeDepositContract.filters.EtherReceived();
 
@@ -63,17 +65,23 @@ export const getLayerOneTransfers = async () => {
       fromBlock: startBlock + 1,
     });
 
-    const events: TransactionRecord[] = logs.map((l) => {
-      const { args } = bridgeDepositContract.interface.parseLog(l);
-      return {
-        transactionHash: l.transactionHash,
-        blockNumber: l.blockNumber,
-        wallet: args.emitter,
-        amount: args.amount / 1e18,
-        isConfirmed: false,
-        isProcessed: false,
-      };
-    });
+    const events: TransactionRecord[] = logs
+      .map((l) => {
+        const { args } = bridgeDepositContract.interface.parseLog(l);
+        return {
+          transactionHash: l.transactionHash,
+          blockNumber: l.blockNumber,
+          wallet: args.emitter,
+          amount: args.amount / 1e18,
+          isConfirmed: false,
+          isProcessed: false,
+        };
+      })
+      .filter(
+        (tx) =>
+          ethers.utils.getAddress(tx.wallet) !==
+          ethers.utils.getAddress(wallet.address)
+      );
 
     if (events.length > 0) {
       await getDB().collection(DB_COLLECTION).insertMany(events);

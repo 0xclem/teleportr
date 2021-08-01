@@ -1,12 +1,8 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 pragma solidity 0.7.3;
 
-import "@openzeppelin/contracts/math/SafeMath.sol";
-
 contract BridgeDeposit {
-    using SafeMath for uint;
-
     address private owner;
     uint256 private maxDepositAmount;
     uint256 private maxBalance;
@@ -28,10 +24,10 @@ contract BridgeDeposit {
     }
 
     // Send the contract's balance to the owner
-    function rug() public isOwner {
+    function withdrawBalance() public isOwner {
         uint256 balance = address(this).balance;
         payable(owner).transfer(balance);
-        emit Rugged(owner, balance);
+        emit BalanceWithdrawn(owner, balance);
     }
 
     function destroy() public isOwner {
@@ -105,7 +101,7 @@ contract BridgeDeposit {
     event MaxDepositAmountSet(uint256 previousAmount, uint256 newAmount);
     event CanReceiveDepositSet(bool canReceiveDeposit);
     event MaxBalanceSet(uint256 previousBalance, uint256 newBalance);
-    event Rugged(address indexed owner, uint256 balance);
+    event BalanceWithdrawn(address indexed owner, uint256 balance);
     event EtherReceived(address indexed emitter, uint256 amount);
     event Destructed(address indexed owner, uint256 amount);
 }

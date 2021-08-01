@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/clementbalestrat/Workspace/optimism-bridge/contracts/BridgeDeposit.sol": {
-      "lastModificationDate": 1626576449683,
-      "contentHash": "66930df805fa7ec5b920a47e3d2a67ee",
+      "lastModificationDate": 1627782819900,
+      "contentHash": "60e6682c6dbe247742978a87547bd696",
       "sourceName": "contracts/BridgeDeposit.sol",
       "solcConfig": {
         "version": "0.7.3",
@@ -27,9 +27,7 @@
           }
         }
       },
-      "imports": [
-        "@openzeppelin/contracts/math/SafeMath.sol"
-      ],
+      "imports": [],
       "versionPragmas": [
         "0.7.3"
       ],
