@@ -3,12 +3,12 @@ import { bridgeDeposit } from "./contracts/BridgeDeposit";
 import { getDB } from "./mongoConnector";
 import { ObjectID } from "mongodb";
 
-const NETWORK = "kovan";
+const NETWORK = process.env.NETWORK || "kovan";
+const OVM_JSON_RPC_URL =
+  process.env.OVM_JSON_RPC_URL || "https://kovan.optimism.io";
+const OVM_NETWORK_ID = process.env.OVM_NETWORK_ID || 69;
 
-const OVM_JSON_RPC_URL = "https://kovan.optimism.io";
-const OVM_NETWORK_ID = 69;
-
-const START_BLOCK = 26140558;
+const START_BLOCK = process.env.START_BLOCK || 26140558;
 const DB_COLLECTION = "transfers";
 
 const CONFIRMATIONS = 21;
@@ -24,8 +24,6 @@ type TransactionRecord = {
   _id?: ObjectID;
 };
 
-//TODO:
-// - add pagination
 let providerL1: ethers.providers.InfuraProvider | null = null;
 const getProviderL1 = (): ethers.providers.InfuraProvider => {
   if (!providerL1) {
