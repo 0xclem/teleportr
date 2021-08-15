@@ -1,7 +1,11 @@
 branch-defaults:
-  master:
+  main:
     environment: teleporter-prod
     group_suffix: null
+environment-defaults:
+  teleporter-prod:
+    branch: null
+    repository: null
 global:
   application_name: teleporter
   branch: null
@@ -12,7 +16,7 @@ global:
   instance_profile: null
   platform_name: null
   platform_version: null
-  profile: null
+  profile: havven
   repository: null
   sc: git
   workspace_type: Application
