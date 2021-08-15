@@ -8,7 +8,7 @@ const OVM_JSON_RPC_URL =
   process.env.OVM_JSON_RPC_URL || "https://kovan.optimism.io";
 const OVM_NETWORK_ID = process.env.OVM_NETWORK_ID || 69;
 
-const START_BLOCK = process.env.START_BLOCK || 26140558;
+const START_BLOCK = Number(process.env.START_BLOCK || 26140558);
 const DB_COLLECTION = "transfers";
 
 const CONFIRMATIONS = 21;
