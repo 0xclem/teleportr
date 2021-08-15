@@ -40,7 +40,7 @@ export const getLayerOneTransfers = async () => {
     if (!process.env.LAYER_2_WALLET_PK) return;
     const providerL1 = getProviderL1();
     const bridgeDepositContract = new ethers.Contract(
-      bridgeDeposit.address,
+      process.env.TELEPORTER_CONTRACT_ADDRESS || bridgeDeposit.address,
       bridgeDeposit.abi,
       providerL1
     );
@@ -56,6 +56,7 @@ export const getLayerOneTransfers = async () => {
       .toArray();
 
     const startBlock = latestTransfer[0]?.blockNumber ?? START_BLOCK;
+    console.log(`Fetching logs from block: ${startBlock}`);
 
     const logs = await providerL1.getLogs({
       address: bridgeDeposit.address,

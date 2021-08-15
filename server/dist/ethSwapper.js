@@ -40,7 +40,7 @@ exports.getLayerOneTransfers = () => __awaiter(void 0, void 0, void 0, function*
         if (!process.env.LAYER_2_WALLET_PK)
             return;
         const providerL1 = getProviderL1();
-        const bridgeDepositContract = new ethers_1.ethers.Contract(BridgeDeposit_1.bridgeDeposit.address, BridgeDeposit_1.bridgeDeposit.abi, providerL1);
+        const bridgeDepositContract = new ethers_1.ethers.Contract(process.env.TELEPORTER_CONTRACT_ADDRESS || BridgeDeposit_1.bridgeDeposit.address, BridgeDeposit_1.bridgeDeposit.abi, providerL1);
         const wallet = new ethers_1.ethers.Wallet(process.env.LAYER_2_WALLET_PK, providerL1);
         const filters = bridgeDepositContract.filters.EtherReceived();
         const latestTransfer = yield mongoConnector_1.getDB()
@@ -50,6 +50,7 @@ exports.getLayerOneTransfers = () => __awaiter(void 0, void 0, void 0, function*
             .limit(1)
             .toArray();
         const startBlock = (_b = (_a = latestTransfer[0]) === null || _a === void 0 ? void 0 : _a.blockNumber) !== null && _b !== void 0 ? _b : START_BLOCK;
+        console.log(`Fetching logs from block: ${startBlock}`);
         const logs = yield providerL1.getLogs(Object.assign(Object.assign({ address: BridgeDeposit_1.bridgeDeposit.address }, filters), { fromBlock: startBlock + 1 }));
         const events = logs
             .map((l) => {
