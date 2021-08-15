@@ -117,7 +117,7 @@ exports.processLayerOneTransactionsToL2 = () => __awaiter(void 0, void 0, void 0
             console.log("No transaction to process");
             return;
         }
-        const providerL2 = new ethers_1.ethers.providers.JsonRpcProvider(OVM_JSON_RPC_URL, OVM_NETWORK_ID);
+        const providerL2 = new ethers_1.ethers.providers.JsonRpcProvider(OVM_JSON_RPC_URL);
         const wallet = new ethers_1.ethers.Wallet(process.env.LAYER_2_WALLET_PK, providerL2);
         const currentNonce = yield providerL2.getTransactionCount(wallet.address);
         let index = 0;

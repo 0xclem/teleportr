@@ -139,11 +139,9 @@ export const processLayerOneTransactionsToL2 = async () => {
       return;
     }
 
-    const providerL2 = new ethers.providers.JsonRpcProvider(
-      OVM_JSON_RPC_URL,
-      OVM_NETWORK_ID
-    );
+    const providerL2 = new ethers.providers.JsonRpcProvider(OVM_JSON_RPC_URL);
     const wallet = new ethers.Wallet(process.env.LAYER_2_WALLET_PK, providerL2);
+
     const currentNonce = await providerL2.getTransactionCount(wallet.address);
     let index = 0;
     for await (const transaction of transactionsToProcess) {
