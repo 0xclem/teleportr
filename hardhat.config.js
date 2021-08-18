@@ -11,5 +11,9 @@ module.exports = {
 			url: `https://kovan.infura.io/v3/${process.env.INFURA_KEY}`,
 			accounts: [process.env.DEPLOYER_PK],
 		},
+		mainnet: {
+			url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
+			accounts: [process.env.MAINNET_DEPLOYER_PK],
+		},
 	},
 };

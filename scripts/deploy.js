@@ -1,7 +1,7 @@
 const { ethers } = require('hardhat');
 
-const MAX_DEPOSIT_AMOUNT = 0.005;
-const MAX_BALANCE = 0.1;
+const MAX_DEPOSIT_AMOUNT = 0.02;
+const MAX_BALANCE = 2;
 
 async function main() {
 	const [deployer] = await ethers.getSigners();

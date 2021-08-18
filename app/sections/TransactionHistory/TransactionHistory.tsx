@@ -4,10 +4,10 @@ import { format } from "date-fns";
 
 import Connector from "../../containers/Connector";
 
-const START_BLOCK = 26499057;
+const START_BLOCK = 13047837;
 const CONFIRMATIONS = 21;
-const ETHERSCAN_URL = "https://kovan.etherscan.io";
-const EXPLORER_URL = "https://kovan-optimistic.etherscan.io";
+const ETHERSCAN_URL = "https://etherscan.io";
+const EXPLORER_URL = "https://optimistic.etherscan.io";
 
 type Transaction = {
   hash: string;

@@ -102,6 +102,40 @@
       "artifacts": [
         "console"
       ]
+    },
+    "/Users/clementbalestrat/Workspace/teleportr/contracts/BridgeDeposit.sol": {
+      "lastModificationDate": 1629261155800,
+      "contentHash": "60e6682c6dbe247742978a87547bd696",
+      "sourceName": "contracts/BridgeDeposit.sol",
+      "solcConfig": {
+        "version": "0.7.3",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "0.7.3"
+      ],
+      "artifacts": [
+        "BridgeDeposit"
+      ]
     }
   }
 }

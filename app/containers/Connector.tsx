@@ -6,8 +6,8 @@ import { useRecoilValue } from "recoil";
 import { walletState } from "../store/wallet";
 import { contract as depositContractData } from "../contracts/BridgeDeposit";
 
-const OVM_JSON_RPC_URL = "https://kovan.optimism.io";
-const OVM_NETWORK_ID = 69;
+const OVM_JSON_RPC_URL = "https://mainnet.optimism.io";
+const OVM_NETWORK_ID = 10;
 const walletL2 = "0x59C47ceC65ad592F6C83ABd020BfD8fF0172D77D";
 
 const useConnector = () => {
