@@ -3,10 +3,9 @@ import { bridgeDeposit } from "./contracts/BridgeDeposit";
 import { getDB } from "./mongoConnector";
 import { ObjectID } from "mongodb";
 
-const NETWORK = process.env.NETWORK || "kovan";
+const NETWORK = process.env.NETWORK || "mainnet";
 const OVM_JSON_RPC_URL =
-  process.env.OVM_JSON_RPC_URL || "https://kovan.optimism.io";
-const OVM_NETWORK_ID = process.env.OVM_NETWORK_ID || 69;
+  process.env.OVM_JSON_RPC_URL || "https://mainnet.optimism.io";
 
 const START_BLOCK = Number(process.env.START_BLOCK || 26140558);
 const DB_COLLECTION = "transfers";
