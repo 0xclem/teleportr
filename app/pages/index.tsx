@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Blink</title>
+        <title>Teleportr</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

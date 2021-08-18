@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <Title>Blink</Title>
+      <Title>Teleportr</Title>
 
       {wallet ? (
         <Wallet>{wallet}</Wallet>
