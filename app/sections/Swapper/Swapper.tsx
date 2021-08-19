@@ -5,6 +5,7 @@ import { BigNumber, ethers } from "ethers";
 import Connector from "../../containers/Connector";
 
 const GAS_LIMIT_BUFFER = 1000;
+const ETHERSCAN_URL = "https://etherscan.io";
 
 type ContractInfo = {
   maxDepositAmount: number;
@@ -121,6 +122,19 @@ const Swapper = () => {
       <h1>Transfer ETH</h1>
       <Data>
         <DataElement>
+          {"Deposit contract: "}
+          {depositContract && depositContract.address ? (
+            <DataLink
+              href={`${ETHERSCAN_URL}/address/${depositContract.address}`}
+              target="_blank"
+            >
+              {depositContract.address}
+            </DataLink>
+          ) : (
+            "--"
+          )}
+        </DataElement>
+        <DataElement>
           {`Max deposit amount: ${contractInfo?.maxDepositAmount ?? "--"} eth`}
         </DataElement>
         <DataElement>
@@ -162,6 +176,10 @@ const Wrapper = styled.div`
   padding: 20px 0;
 `;
 const Data = styled.div``;
+const DataLink = styled.a`
+  text-decoration: underline;
+  cursor: pointer;
+`;
 const DataElement = styled.div``;
 const RowCentered = styled.div`
   display: flex;

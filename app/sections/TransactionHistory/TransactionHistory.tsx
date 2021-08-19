@@ -62,7 +62,11 @@ const TransactionHistory = () => {
 
   return (
     <Wrapper>
-      <h1>Transaction History</h1>
+      <h1 style={{ marginBottom: "5px" }}>Transaction History</h1>
+      <div>
+        Please note it could take 5-10 mins until you see the ETH on your L2
+        wallet.
+      </div>
       <Transactions>
         <RowRight>
           <RefreshButton onClick={fetchTransactions}>Refresh</RefreshButton>
