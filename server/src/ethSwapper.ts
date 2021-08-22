@@ -152,22 +152,28 @@ export const processLayerOneTransactionsToL2 = async () => {
       };
       const gasEstimate = await wallet.estimateGas(transactionParams);
       const txFee = (Number(gasEstimate) * OVM_GAS_PRICE) / 1e9;
-      const tx = await wallet.sendTransaction({
-        ...transactionParams,
-        value: ethers.utils.parseEther(
-          (transaction.amount - txFee).toFixed(18)
-        ),
-        gasLimit: Number(gasEstimate),
-      });
-      console.log(
-        `Transaction ${tx.hash} for ${transaction.wallet} broadcasted`
-      );
-      await tx.wait();
+      const amountToTransfer = transaction.amount - txFee;
+
+      if (amountToTransfer > 0) {
+        const tx = await wallet.sendTransaction({
+          ...transactionParams,
+          value: ethers.utils.parseEther(amountToTransfer.toFixed(18)),
+          gasLimit: Number(gasEstimate),
+        });
+        console.log(
+          `Transaction ${tx.hash} for ${transaction.wallet} broadcasted`
+        );
+        await tx.wait();
+      }
+
       await getDB()
         .collection(DB_COLLECTION)
         .updateOne({ _id: transaction._id }, { $set: { isProcessed: true } });
+
       console.log(
-        `Transaction processed for wallet ${transaction.wallet} for a ${txFee} ether fee`
+        amountToTransfer > 0
+          ? `Transaction processed for wallet ${transaction.wallet} for a ${txFee} ether fee`
+          : `Transaction cancelled for wallet ${transaction.wallet} because of low amount`
       );
       index += 1;
     }

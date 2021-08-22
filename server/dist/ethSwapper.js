@@ -20,9 +20,8 @@ exports.processLayerOneTransactionsToL2 = exports.checkLayerOneConfirmations = e
 const ethers_1 = require("ethers");
 const BridgeDeposit_1 = require("./contracts/BridgeDeposit");
 const mongoConnector_1 = require("./mongoConnector");
-const NETWORK = process.env.NETWORK || "kovan";
-const OVM_JSON_RPC_URL = process.env.OVM_JSON_RPC_URL || "https://kovan.optimism.io";
-const OVM_NETWORK_ID = process.env.OVM_NETWORK_ID || 69;
+const NETWORK = process.env.NETWORK || "mainnet";
+const OVM_JSON_RPC_URL = process.env.OVM_JSON_RPC_URL || "https://mainnet.optimism.io";
 const START_BLOCK = Number(process.env.START_BLOCK || 26140558);
 const DB_COLLECTION = "transfers";
 const CONFIRMATIONS = 21;
@@ -132,13 +131,18 @@ exports.processLayerOneTransactionsToL2 = () => __awaiter(void 0, void 0, void 0
                 };
                 const gasEstimate = yield wallet.estimateGas(transactionParams);
                 const txFee = (Number(gasEstimate) * OVM_GAS_PRICE) / 1e9;
-                const tx = yield wallet.sendTransaction(Object.assign(Object.assign({}, transactionParams), { value: ethers_1.ethers.utils.parseEther((transaction.amount - txFee).toFixed(18)), gasLimit: Number(gasEstimate) }));
-                console.log(`Transaction ${tx.hash} for ${transaction.wallet} broadcasted`);
-                yield tx.wait();
+                const amountToTransfer = transaction.amount - txFee;
+                if (amountToTransfer > 0) {
+                    const tx = yield wallet.sendTransaction(Object.assign(Object.assign({}, transactionParams), { value: ethers_1.ethers.utils.parseEther(amountToTransfer.toFixed(18)), gasLimit: Number(gasEstimate) }));
+                    console.log(`Transaction ${tx.hash} for ${transaction.wallet} broadcasted`);
+                    yield tx.wait();
+                }
                 yield mongoConnector_1.getDB()
                     .collection(DB_COLLECTION)
                     .updateOne({ _id: transaction._id }, { $set: { isProcessed: true } });
-                console.log(`Transaction processed for wallet ${transaction.wallet} for a ${txFee} ether fee`);
+                console.log(amountToTransfer > 0
+                    ? `Transaction processed for wallet ${transaction.wallet} for a ${txFee} ether fee`
+                    : `Transaction cancelled for wallet ${transaction.wallet} because of low amount`);
                 index += 1;
             }
         }
