@@ -1,35 +1,22 @@
 import styled from "styled-components";
-import { useRecoilState } from "recoil";
 
-import { walletState } from "../../store/wallet";
+import Connector from "../../containers/Connector";
+import { truncateAddress } from "../../utils/wallet";
 
 const Header = () => {
-  const [wallet, setWallet] = useRecoilState(walletState);
+  const { connectWallet, walletAddress } = Connector.useContainer();
 
   const handleConnectWallet = async () => {
-    try {
-      if (!window.ethereum) return;
-      const accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      setWallet(accounts[0]);
-      window.ethereum.on("accountsChanged", (accounts) => {
-        setWallet(accounts[0]);
-      });
-    } catch (e) {
-      console.log(e);
-    }
+    connectWallet();
   };
 
   return (
     <HeaderWrapper>
-      <Title>Teleportr</Title>
+      <Title>TELEPORTR</Title>
 
-      {wallet ? (
-        <Wallet>{wallet}</Wallet>
-      ) : (
-        <Button onClick={handleConnectWallet}>Connect wallet</Button>
-      )}
+      <Button onClick={handleConnectWallet}>
+        {walletAddress ? truncateAddress(walletAddress): 'Connect wallet'}
+      </Button>
     </HeaderWrapper>
   );
 };
@@ -46,17 +33,17 @@ const Title = styled.h1``;
 
 const Button = styled.button`
   height: 40px;
+  min-width: 196px;
   background: none;
-  border: 2px solid #25283d;
+  border: none;
   font-family: "Fjalla One", sans-serif;
-  color: #25283d;
+  font-size: 13px;
+  color: #FFFFFF;
   font-weight: bold;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
-`;
-
-const Wallet = styled.div`
-  font-weight: bold;
+  background-color: #CF1C8E;
+  text-transform: uppercase;
 `;
 
 export default Header;

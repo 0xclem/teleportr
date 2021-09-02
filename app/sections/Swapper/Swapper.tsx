@@ -19,7 +19,7 @@ type EtherBalance = {
 };
 
 const Swapper = () => {
-  const { depositContract, wallet, provider, signer, providerL2, walletL2 } =
+  const { depositContract, walletAddress, provider, signer, providerL2, walletL2 } =
     Connector.useContainer();
   const [contractInfo, setContractInfo] = useState<ContractInfo | null>(null);
   const [ethBalance, setEthBalance] = useState<EtherBalance | null>(null);
@@ -32,7 +32,7 @@ const Swapper = () => {
 
   useEffect(() => {
     const fetchContractData = async () => {
-      if (!wallet || !depositContract || !provider || !providerL2 || !walletL2)
+      if (!walletAddress || !depositContract || !provider || !providerL2 || !walletL2)
         return;
       try {
         const [
@@ -45,7 +45,7 @@ const Swapper = () => {
           depositContract.getMaxDepositAmount(),
           depositContract.getMaxBalance(),
           depositContract.getCanReceiveDeposit(),
-          provider.getBalance(wallet),
+          provider.getBalance(walletAddress),
           providerL2.getBalance(walletL2),
         ]);
         setContractInfo({
@@ -61,7 +61,7 @@ const Swapper = () => {
       } catch (e) {}
     };
     fetchContractData();
-  }, [wallet, depositContract, provider, providerL2, walletL2]);
+  }, [walletAddress, depositContract, provider, providerL2, walletL2]);
 
   useEffect(() => {
     const getGasLimit = async () => {
@@ -118,6 +118,7 @@ const Swapper = () => {
   };
 
   return (
+    <>
     <Wrapper>
       <h1>Transfer ETH</h1>
       <Data>
@@ -168,7 +169,27 @@ const Swapper = () => {
           </DepositButton>
         </Column>
       </RowCentered>
+
     </Wrapper>
+    <MainContainer>
+      <GradientBoxWrapper>
+      <GradientBox>
+        <MainForm>
+          <GradientButtonWrapper>
+            <GradientButton>Select currency</GradientButton>
+          </GradientButtonWrapper>
+          <MainFormInputContainer>
+            <MainFormInputLabel>Deposit</MainFormInputLabel>
+            <MainFormInput placeholder='0.05' type='number' />
+          </MainFormInputContainer>
+          <GradientButtonWrapper>
+            <GradientButton>Connect Wallet</GradientButton>
+          </GradientButtonWrapper>
+        </MainForm>
+        </GradientBox>
+        </GradientBoxWrapper>
+    </MainContainer>
+    </>
   );
 };
 
@@ -235,6 +256,99 @@ const DepositButton = styled.button`
   &:disabled {
     color: #25283d;
     opacity: 0.4;
+  }
+`;
+
+const MainContainer = styled.div`
+  margin: auto;
+`;
+
+const GradientBoxWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 185px;
+  width: 90%;
+  background: linear-gradient(90deg, #170557 0%, #00D1FF 0%, #E12096 100%, #00D1FF 100%);
+  margin: 0 auto;
+  border-radius: 20px;
+`;
+
+const GradientBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+
+  background: #060134;
+  background-clip: padding-box;
+  border-radius: 16px;
+`;
+
+const MainForm = styled.div`
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 316px;
+  height: 245px;
+  margin: 0px auto;
+  left: 0;
+  right: 0;
+`;
+
+const GradientButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(90deg, #170557 0%, #4489CE 0%, #944BA9 100%, #00D1FF 100%);
+  border-radius: 16px;
+`;
+
+const GradientButton = styled.button`
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  cursor: pointer;
+  background-color: #060134;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  text-transform: uppercase;
+`;
+
+const MainFormInputContainer = styled.div`
+  background-color:#1C1541;
+  height: 48px;
+  border-radius: 6px;
+  padding: 0 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const MainFormInputLabel = styled.p`
+  text-transform: uppercase;
+  color: #FFFFFF;
+  opacity: 0.74;
+  font-size: 15px;
+`;
+
+const MainFormInput = styled.input`
+  color: #FFFFFF;
+  opacity: 0.74;
+  font-size: 15px;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+
+  &:focus {
+    outline: none;
   }
 `;
 
