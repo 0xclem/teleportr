@@ -89,6 +89,7 @@ const Swapper = () => {
         setGasLimit(Number(gasEstimate) + GAS_LIMIT_BUFFER);
       } catch (e) {
         console.log(e);
+        // @ts-ignore
         setError(e.message);
       }
     };
@@ -113,6 +114,7 @@ const Swapper = () => {
       });
     } catch (e) {
       console.log(e);
+      // @ts-ignore
       setError(e.message);
     }
   };
