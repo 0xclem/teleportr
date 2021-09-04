@@ -18,15 +18,15 @@ type Transaction = {
 };
 
 const TransactionHistory = () => {
-  const { depositContract, wallet, provider, signer, providerL2 } =
+  const { depositContract, walletAddress, provider, providerL2 } =
     Connector.useContainer();
   const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [currentBlock, setCurrentBlock] = useState<number | null>(null);
 
   const fetchTransactions = useCallback(async () => {
-    if (!provider || !depositContract || !wallet || !providerL2) return;
+    if (!provider || !depositContract || !walletAddress || !providerL2) return;
     try {
-      const filters = depositContract.filters.EtherReceived(wallet);
+      const filters = depositContract.filters.EtherReceived(walletAddress);
       const [logs, lastBlock] = await Promise.all([
         provider.getLogs({
           address: depositContract.address,
@@ -54,7 +54,7 @@ const TransactionHistory = () => {
     } catch (e) {
       console.log(e);
     }
-  }, [provider, depositContract, wallet, providerL2]);
+  }, [provider, depositContract, walletAddress, providerL2]);
 
   useEffect(() => {
     fetchTransactions();
@@ -62,10 +62,9 @@ const TransactionHistory = () => {
 
   return (
     <Wrapper>
-      <h1 style={{ marginBottom: "5px" }}>Transaction History</h1>
-      <div>
-        Please note it could take 5-10 mins until you see the ETH on your L2
-        wallet.
+      <h1 style={{ fontFamily: 'GT America CM', letterSpacing: "1.16px", marginTop: "36px", marginBottom: "5px", textAlign: 'center', textTransform: 'uppercase', color: '#FFFFFF' }}>Transaction History</h1>
+      <div style={{ fontFamily: "\"Inter\", sans-serif", color: '#FFFFFF', fontSize: "21px", letterSpacing: '0.57px', textAlign: 'center' }}>
+        Connect your wallet to view your transaction history.
       </div>
       <Transactions>
         <RowRight>
@@ -97,7 +96,7 @@ const TransactionHistory = () => {
                 <div>Amount: {tx.amount} ether</div>
                 <div>
                   <Link
-                    href={`${EXPLORER_URL}/address/${wallet}`}
+                    href={`${EXPLORER_URL}/address/${walletAddress}`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -107,7 +106,7 @@ const TransactionHistory = () => {
               </Transaction>
             );
           })
-        ) : wallet ? (
+        ) : walletAddress ? (
           <div>No Transaction for this wallet</div>
         ) : (
           <div>Please connect your wallet using Metamask</div>

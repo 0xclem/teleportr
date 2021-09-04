@@ -121,8 +121,7 @@ const Swapper = () => {
 
   return (
     <>
-      <Wrapper>
-        <h1>Transfer ETH</h1>
+      {/* <Wrapper>
         <Data>
           <DataElement>
             {"Deposit contract: "}
@@ -172,16 +171,18 @@ const Swapper = () => {
           </Column>
         </RowCentered>
 
-      </Wrapper>
+      </Wrapper> */}
       <MainContainer>
         <GradientBoxWrapper>
           <GradientBox>
             <BoxSplit>
+              <p>My balance: {ethBalance?.balance ?? 0}</p>
               <h3>Ethereum</h3>
               <div>L1</div>
             </BoxSplit>
 
             <BoxSplit>
+              <p>Contract balance: x/4 ETH</p>
               <h3>Optimism</h3>
               <div>L2</div>
             </BoxSplit>
@@ -194,13 +195,13 @@ const Swapper = () => {
 
             <MainFormInputContainer>
               <MainFormInputLabel>Deposit</MainFormInputLabel>
-              <MainFormInput placeholder='0.05' type='number' />
+              <MainFormInput placeholder='0.05' type='number' value={depositAmount} onChange={e => setDepositAmount(e.target.value)} />
             </MainFormInputContainer>
 
             <MaxPortableButton>Use Max Portable: 0.05ETH</MaxPortableButton>
             
             <GradientButtonWrapper>
-              <GradientButton>Connect Wallet</GradientButton>
+              <GradientButton onClick={handleDeposit}>Connect Wallet</GradientButton>
             </GradientButtonWrapper>
           </MainForm>
         </GradientBoxWrapper>
@@ -338,6 +339,8 @@ const GradientButton = styled.button`
   border-radius: 12px;
   font-size: 17px;
   text-transform: uppercase;
+  font-family: "GT America CM";
+  letter-spacing: 0.46px;
 `;
 
 const MainFormInputContainer = styled.div`
@@ -356,6 +359,8 @@ const MainFormInputLabel = styled.p`
   color: #FFFFFF;
   opacity: 0.74;
   font-size: 15px;
+  font-family: "GT America Bold";
+  letter-spacing: 0.41px;
 `;
 
 const MainFormInput = styled.input`
@@ -365,6 +370,7 @@ const MainFormInput = styled.input`
   height: 100%;
   border: none;
   background-color: transparent;
+  text-align: right;
 
   &:focus {
     outline: none;
@@ -378,6 +384,8 @@ const MaxPortableButton = styled.button`
   font-size: 17px;
   border: none;
   cursor: pointer;
+  font-family: "GT America Condensed Bold";
+  letter-spacing: 0.41px;
 `;
 
 const BoxSplit = styled.div`
@@ -386,8 +394,16 @@ const BoxSplit = styled.div`
   padding-left: 18px;
   color: #FFFFFF;
 
+  p {
+    font-family: "GT America CM";
+    letter-spacing: 0.43px;
+    font-size: 16px;
+    color: #9E9CB0;
+  }
+
   h3 {
     text-transform: uppercase;
+    font-size: 20px;
   }
 `;
 
