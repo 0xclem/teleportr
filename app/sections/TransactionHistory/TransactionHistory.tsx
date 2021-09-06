@@ -62,7 +62,7 @@ const TransactionHistory = () => {
 
   return (
     <Wrapper>
-      <h1 style={{ fontFamily: 'GT America CM', letterSpacing: "1.16px", marginTop: "36px", marginBottom: "5px", textAlign: 'center', textTransform: 'uppercase', color: '#FFFFFF' }}>Transaction History</h1>
+      <h1 style={{ fontFamily: 'GT America CM', letterSpacing: "1.16px", marginTop: "56px", marginBottom: "5px", textAlign: 'center', textTransform: 'uppercase', color: '#FFFFFF' }}>Transaction History</h1>
       <div style={{ fontFamily: "\"Inter\", sans-serif", color: '#FFFFFF', fontSize: "21px", letterSpacing: '0.57px', textAlign: 'center' }}>
         Connect your wallet to view your transaction history.
       </div>
@@ -117,7 +117,7 @@ const TransactionHistory = () => {
 };
 
 const Wrapper = styled.div`
-  border-top: 2px solid black;
+  /* border-top: 2px solid black; */
 `;
 
 const RowRight = styled.div`

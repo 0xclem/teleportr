@@ -34,14 +34,23 @@
 
 @font-face {
   font-family: "GT America Bold";
-  src:  url("/fonts/GT America Bold.ttf");
+  src: url("/fonts/GT_America_Bold/GT_America_Bold.eot?#iefix")
+      format("embedded-opentype"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.woff2")
+      format("woff2"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.woff")
+      format("woff"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.ttf")
+      format("truetype"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.svg")
+      format("svg");
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: "GT America Condensed Bold";
-  src:  url("/fonts/GT_America_Condensed_Bold.ttf");
+  src: url("/fonts/GT_America_Condensed_Bold.ttf");
   font-weight: bold;
   font-style: normal;
 }
@@ -49,7 +58,7 @@
 html,
 body {
   margin: 0 auto;
-  background-color: #efd9ce;
+  background-color: #030a46;
   font-family: "Fjalla One", sans-serif;
 }
 
@@ -69,4 +78,15 @@ h4,
 h5,
 h6 {
   font-family: "GT America Bold";
+}
+
+.teleportr-hero-section {
+  position: relative;
+  z-index: 0;
+  background-image: url("/img/teleportr-landing-hero-bg.jpg");
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: -1px;
+  height: 105vh;
 }

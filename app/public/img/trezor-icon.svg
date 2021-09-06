@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="47.635" height="61.252" viewBox="0 0 47.635 61.252">
+  <defs>
+    <linearGradient id="linear-gradient" x1="-0.085" y1="0.427" x2="1" y2="0.441" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#170557"/>
+      <stop offset="0" stop-color="#00d1ff"/>
+      <stop offset="0.911" stop-color="#e12096"/>
+      <stop offset="1" stop-color="#bc1f83"/>
+    </linearGradient>
+    <filter id="Trezor-logo" x="0" y="0" width="47.635" height="61.252" filterUnits="userSpaceOnUse">
+      <feOffset dy="3" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feFlood flood-opacity="0.624"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Styles" transform="translate(9 6)" opacity="0.926">
+    <g transform="matrix(1, 0, 0, 1, -9, -6)" filter="url(#Trezor-logo)">
+      <path id="Trezor-logo-2" data-name="Trezor-logo" d="M4.429,13.406V10.422a10.422,10.422,0,1,1,20.845,0v2.984h4.361l-.368,22.861L14.982,43.252,0,36.268V13.406Zm5.211,0H20.063V10.422h-.008a5.209,5.209,0,0,0-10.406,0H9.641ZM5.993,18.76V32.57l8.825,4.16,8.893-4.16V18.76Z" transform="translate(9 6)" fill-rule="evenodd" fill="url(#linear-gradient)"/>
+    </g>
+  </g>
+</svg>

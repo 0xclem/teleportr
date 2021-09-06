@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="22.287" height="19.024" viewBox="0 0 22.287 19.024">
+  <defs>
+    <filter id="blue-x" x="0" y="0" width="22.287" height="19.024" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="0.5" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#blue-x)">
+    <path id="blue-x-2" data-name="blue-x" d="M4.418,3.384a.578.578,0,0,0-.473-.247H.115A.1.1,0,0,1,.032,3.1.118.118,0,0,1,0,3.021V.116A.118.118,0,0,1,.032.036.1.1,0,0,1,.115,0H4.163A3.287,3.287,0,0,1,6.807,1.409L7.79,2.76,5.874,5.388l-1.456-2Zm7.075-1.99A3.307,3.307,0,0,1,14.15,0h4.036a.1.1,0,0,1,.077.029.13.13,0,0,1,.025.087v2.9a.136.136,0,0,1-.025.08.088.088,0,0,1-.077.036H14.354a.578.578,0,0,0-.473.247L11.059,7.248l2.835,3.892a.578.578,0,0,0,.46.233h3.831a.088.088,0,0,1,.077.036.162.162,0,0,1,.025.094v2.9a.136.136,0,0,1-.025.08.088.088,0,0,1-.077.036H14.15a3.262,3.262,0,0,1-2.644-1.409L9.156,9.891l-2.35,3.224A3.3,3.3,0,0,1,4.15,14.524H.115a.087.087,0,0,1-.077-.036.159.159,0,0,1-.025-.095v-2.9a.135.135,0,0,1,.025-.08.087.087,0,0,1,.077-.036H3.946a.6.6,0,0,0,.473-.247L7.189,7.32l4.3-5.926Z" transform="translate(2 0.5)" fill="#fff" stroke="rgba(0,0,0,0)" stroke-miterlimit="10" stroke-width="1"/>
+  </g>
+</svg>

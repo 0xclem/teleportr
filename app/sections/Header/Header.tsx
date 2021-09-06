@@ -12,7 +12,8 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <Title>TELEPORTR</Title>
+      {/* eslint-disable-next-line */}
+      <img src='/img/teleportr-logo.svg' alt='Teleportr Logo' />
 
       <Button onClick={handleConnectWallet}>
         {walletAddress ? truncateAddress(walletAddress): 'Connect wallet'}
@@ -26,7 +27,7 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #25283d;
+  /* border-bottom: 2px solid #25283d; */
 `;
 
 const Title = styled.h1``;

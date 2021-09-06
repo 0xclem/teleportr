@@ -120,92 +120,115 @@ const Swapper = () => {
   };
 
   return (
-    <>
-      {/* <Wrapper>
-        <Data>
-          <DataElement>
-            {"Deposit contract: "}
-            {depositContract && depositContract.address ? (
-              <DataLink
-                href={`${ETHERSCAN_URL}/address/${depositContract.address}`}
-                target="_blank"
-              >
-                {depositContract.address}
-              </DataLink>
-            ) : (
-              "--"
-            )}
-          </DataElement>
-          <DataElement>
-            {`Max deposit amount: ${contractInfo?.maxDepositAmount ?? "--"} eth`}
-          </DataElement>
-          <DataElement>
-            {`Max contract balance: ${contractInfo?.maxBalance ?? "--"} eth`}
-          </DataElement>
-          <DataElement>
-            {`Deposits enabled: ${contractInfo?.isEnabled ?? "--"}`}
-          </DataElement>
-        </Data>
-        <RowCentered>
-          <Column>
-            <Balance>
-              Balance:
-              <BalanceButton
-                onClick={() =>
-                  setDepositAmount(ethBalance?.balance?.toString() ?? "0")
-                }
-              >{` ${ethBalance?.balance ?? 0}`}</BalanceButton>
-            </Balance>
-            <Input
-              type="text"
-              placeholder="0"
-              value={depositAmount}
-              onChange={(e) => setDepositAmount(e.target.value)}
-            />
-            <DepositButton
-              onClick={handleDeposit}
-              disabled={!!error || !gasLimit}
+    /* <Wrapper>
+      <Data>
+        <DataElement>
+          {"Deposit contract: "}
+          {depositContract && depositContract.address ? (
+            <DataLink
+              href={`${ETHERSCAN_URL}/address/${depositContract.address}`}
+              target="_blank"
             >
-              {error || "Deposit"}
-            </DepositButton>
-          </Column>
-        </RowCentered>
+              {depositContract.address}
+            </DataLink>
+          ) : (
+            "--"
+          )}
+        </DataElement>
+        <DataElement>
+          {`Max deposit amount: ${contractInfo?.maxDepositAmount ?? "--"} eth`}
+        </DataElement>
+        <DataElement>
+          {`Max contract balance: ${contractInfo?.maxBalance ?? "--"} eth`}
+        </DataElement>
+        <DataElement>
+          {`Deposits enabled: ${contractInfo?.isEnabled ?? "--"}`}
+        </DataElement>
+      </Data>
+      <RowCentered>
+        <Column>
+          <Balance>
+            Balance:
+            <BalanceButton
+              onClick={() =>
+                setDepositAmount(ethBalance?.balance?.toString() ?? "0")
+              }
+            >{` ${ethBalance?.balance ?? 0}`}</BalanceButton>
+          </Balance>
+          <Input
+            type="text"
+            placeholder="0"
+            value={depositAmount}
+            onChange={(e) => setDepositAmount(e.target.value)}
+          />
+          <DepositButton
+            onClick={handleDeposit}
+            disabled={!!error || !gasLimit}
+          >
+            {error || "Deposit"}
+          </DepositButton>
+        </Column>
+      </RowCentered>
 
-      </Wrapper> */}
-      <MainContainer>
-        <GradientBoxWrapper>
-          <GradientBox>
-            <BoxSplit>
-              <p>My balance: {ethBalance?.balance ?? 0}</p>
-              <h3>Ethereum</h3>
-              <div>L1</div>
-            </BoxSplit>
+    </Wrapper> */
+    <>
+    <MainContainer>
+      <GradientBoxWrapper>
+        <GradientBox>
+          <BoxSplit>
+            <p>My balance: {ethBalance?.balance ?? 0}</p>
+            <div style={{ display: 'flex' }}>
+              {/* eslint-disable-next-line */}
+              <img src='/img/eth-icon-circle.svg' alt='ETH Icon' />
+              <div style={{marginLeft: 8}}>
+                <h3>Ethereum</h3>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {/* eslint-disable-next-line */}
+                  <img src='/img/control-panel-arrow.svg' alt='Arrow' style={{ marginRight: 8 }} />
+                  <h2>L1</h2>
+                </div>
+              </div>
+            </div>
+          </BoxSplit>
 
-            <BoxSplit>
-              <p>Contract balance: x/4 ETH</p>
-              <h3>Optimism</h3>
-              <div>L2</div>
-            </BoxSplit>
+          <BoxSplit>
+            <p>Contract balance: x/4 ETH</p>
+            <div style={{ display: 'flex'}}>
+              {/* eslint-disable-next-line */}
+              <img src='/img/op-icon-circle.svg' alt='ETH Icon' />
+              <div style={{ marginLeft: 8, alignItems: 'center' }}>
+                <h3>Optimism</h3>
 
-          </GradientBox>
-          <MainForm>
-            <GradientButtonWrapper>
-              <GradientButton>Select currency</GradientButton>
-            </GradientButtonWrapper>
+                <div style={{ display: 'flex'}}>
+                  {/* eslint-disable-next-line */}
+                  <img src='/img/control-panel-arrow.svg' alt='Arrow' style={{ marginRight: 8 }} />
+                <h2>L2</h2>
+                </div>
+              </div>
+            </div>
+          </BoxSplit>
 
-            <MainFormInputContainer>
-              <MainFormInputLabel>Deposit</MainFormInputLabel>
-              <MainFormInput placeholder='0.05' type='number' value={depositAmount} onChange={e => setDepositAmount(e.target.value)} />
-            </MainFormInputContainer>
+        </GradientBox>
+        <MainForm>
+          <GradientButtonWrapper>
+            <GradientButton>Select currency</GradientButton>
+          </GradientButtonWrapper>
 
-            <MaxPortableButton>Use Max Portable: 0.05ETH</MaxPortableButton>
-            
-            <GradientButtonWrapper>
-              <GradientButton onClick={handleDeposit}>Connect Wallet</GradientButton>
-            </GradientButtonWrapper>
-          </MainForm>
-        </GradientBoxWrapper>
-      </MainContainer>
+          <MainFormInputContainer>
+            <MainFormInputLabel>Deposit</MainFormInputLabel>
+            <MainFormInput placeholder='0.05' type='number' value={depositAmount} onChange={e => setDepositAmount(e.target.value)} />
+          </MainFormInputContainer>
+
+          <MaxPortableButton onClick={() => {
+            setDepositAmount(contractInfo?.maxDepositAmount.toString() ?? '0.05');
+          }}>Use Max Portable: 0.05ETH</MaxPortableButton>
+          
+          <GradientButtonWrapper>
+            <GradientButton onClick={handleDeposit}>Connect Wallet</GradientButton>
+          </GradientButtonWrapper>
+        </MainForm>
+      </GradientBoxWrapper>
+    </MainContainer>
     </>
   );
 };
@@ -371,6 +394,8 @@ const MainFormInput = styled.input`
   border: none;
   background-color: transparent;
   text-align: right;
+  font-family: "GT America Bold";
+  letter-spacing: 0.41px;
 
   &:focus {
     outline: none;
@@ -399,11 +424,19 @@ const BoxSplit = styled.div`
     letter-spacing: 0.43px;
     font-size: 16px;
     color: #9E9CB0;
+    text-align: center;
   }
 
   h3 {
     text-transform: uppercase;
     font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+
+  h2 {
+    font-size: 42px;
+    margin: 4px 0;
   }
 `;
 
