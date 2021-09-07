@@ -90,3 +90,16 @@ h6 {
   margin-bottom: -1px;
   height: 105vh;
 }
+
+.teleportr-transactions-section {
+  position: relative;
+  z-index: 0;
+  background-color: #20011d;
+  background-image: url("/img/footer-bg.svg");
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* margin-bottom: -20px; */
+  /* margin-top: -56px; */
+  height: 105vh;
+}

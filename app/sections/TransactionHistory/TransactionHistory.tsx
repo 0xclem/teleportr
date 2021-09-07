@@ -62,14 +62,14 @@ const TransactionHistory = () => {
 
   return (
     <Wrapper>
-      <h1 style={{ fontFamily: 'GT America CM', letterSpacing: "1.16px", marginTop: "56px", marginBottom: "5px", textAlign: 'center', textTransform: 'uppercase', color: '#FFFFFF' }}>Transaction History</h1>
-      <div style={{ fontFamily: "\"Inter\", sans-serif", color: '#FFFFFF', fontSize: "21px", letterSpacing: '0.57px', textAlign: 'center' }}>
+      <TitleText>Transaction History</TitleText>
+      <ConnectText>
         Connect your wallet to view your transaction history.
-      </div>
+      </ConnectText>
       <Transactions>
-        <RowRight>
+        {/* <RowRight>
           <RefreshButton onClick={fetchTransactions}>Refresh</RefreshButton>
-        </RowRight>
+        </RowRight> */}
         {currentBlock && transactions && transactions.length > 0 ? (
           transactions.map((tx) => {
             return (
@@ -118,6 +118,25 @@ const TransactionHistory = () => {
 
 const Wrapper = styled.div`
   /* border-top: 2px solid black; */
+`;
+
+const TitleText = styled.h1`
+  font-family: "GT America CM";
+  letter-spacing: 1.16px;
+  margin-bottom: 5px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  font-size: 43px;
+  margin-top: 0px;
+`;
+
+const ConnectText = styled.p`
+  font-family: "Inter", sans-serif;
+  color:#FFFFFF;
+  font-size: 21px;
+  letter-spacing: 0.57px;
+  text-align: center;
 `;
 
 const RowRight = styled.div`

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
 
 import Connector from "../../containers/Connector";
+import CurrencySelect from "../../components/CurrencySelect";
 
 const GAS_LIMIT_BUFFER = 1000;
 const ETHERSCAN_URL = "https://etherscan.io";
@@ -211,7 +212,8 @@ const Swapper = () => {
         </GradientBox>
         <MainForm>
           <GradientButtonWrapper>
-            <GradientButton>Select currency</GradientButton>
+            {/* <GradientButton>Select currency</GradientButton> */}
+            <CurrencySelect />
           </GradientButtonWrapper>
 
           <MainFormInputContainer>
