@@ -211,10 +211,7 @@ const Swapper = () => {
 
         </GradientBox>
         <MainForm>
-          <GradientButtonWrapper>
-            {/* <GradientButton>Select currency</GradientButton> */}
-            <CurrencySelect />
-          </GradientButtonWrapper>
+          <CurrencySelect />
 
           <MainFormInputContainer>
             <MainFormInputLabel>Deposit</MainFormInputLabel>

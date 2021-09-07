@@ -1,15 +1,24 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-const GradientButton = styled.button`
-  position: relative;
+const GradientButtonWrapper = styled.div<{ isOpen: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(90deg, #170557 0%, #4489CE 0%, #944BA9 100%, #00D1FF 100%);
+  border-radius: ${({ isOpen }) => isOpen ? '16px 16px 0 0' : '16px'};
+`;
+
+const GradientButton = styled.button<{ isOpen: boolean }>`
   width: calc(100% - 8px);
   height: calc(100% - 8px);
   cursor: pointer;
   background-color: #060134;
   color: #FFFFFF;
   border: none;
-  border-radius: 12px;
+  border-radius: ${({ isOpen }) => isOpen ? '12px 12px 0 0' : '12px'};
   font-size: 17px;
   text-transform: uppercase;
   font-family: "GT America CM";
@@ -64,16 +73,18 @@ const CurrencySelect = () => {
 
   return (
     <>
-      <GradientButton onClick={handleToggle}>
-        {/* eslint-disable-next-line */}
-        <img src='/img/control-panel-arrow.svg' alt='Conrol Panel Arrow' />
-        <div>
-          <p className='sc'>Select currency</p>
-          <p>Ethereum ($eth)</p>
-        </div>
-        {/* eslint-disable-next-line */}
-        <img src='/img/control-panel-arrow.svg' alt='Conrol Panel Arrow' />
-      </GradientButton>
+      <GradientButtonWrapper isOpen={isOpen}>
+        <GradientButton onClick={handleToggle} isOpen={isOpen}>
+          {/* eslint-disable-next-line */}
+          <img src='/img/control-panel-arrow.svg' alt='Conrol Panel Arrow' />
+          <div>
+            <p className='sc'>Select currency</p>
+            <p>Ethereum ($eth)</p>
+          </div>
+          {/* eslint-disable-next-line */}
+          <img src='/img/sUSD-symbol.svg' alt='sUSD Symbol' />
+        </GradientButton>
+      </GradientButtonWrapper>
       {isOpen && (
         <CurrencyListWrapper>
           <CurrencyList>
