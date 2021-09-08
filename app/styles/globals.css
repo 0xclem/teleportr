@@ -58,7 +58,6 @@
 html,
 body {
   margin: 0 auto;
-  background-color: #030a46;
   font-family: "Fjalla One", sans-serif;
 }
 
@@ -99,7 +98,5 @@ h6 {
   background-position: bottom center;
   background-repeat: no-repeat;
   background-size: cover;
-  /* margin-bottom: -20px; */
-  /* margin-top: -56px; */
   height: 105vh;
 }

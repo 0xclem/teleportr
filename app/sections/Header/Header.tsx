@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Link from 'next/link';
 
 import Connector from "../../containers/Connector";
 import { truncateAddress } from "../../utils/wallet";
@@ -15,9 +16,14 @@ const Header = () => {
       {/* eslint-disable-next-line */}
       <img src='/img/teleportr-logo.svg' alt='Teleportr Logo' />
 
-      <Button onClick={handleConnectWallet}>
-        {walletAddress ? truncateAddress(walletAddress): 'Connect wallet'}
-      </Button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href='/faq' passHref>
+          <StyledLink>FAQ</StyledLink>
+        </Link>
+        <Button onClick={handleConnectWallet}>
+          {walletAddress ? truncateAddress(walletAddress): 'Connect wallet'}
+        </Button>
+      </div>
     </HeaderWrapper>
   );
 };
@@ -27,24 +33,30 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* border-bottom: 2px solid #25283d; */
 `;
-
-const Title = styled.h1``;
 
 const Button = styled.button`
   height: 40px;
   min-width: 196px;
   background: none;
   border: none;
-  font-family: "Fjalla One", sans-serif;
+  font-family: "GT America Bold";
   font-size: 13px;
+  letter-spacing: 0.35px;
   color: #FFFFFF;
   font-weight: bold;
   border-radius: 20px;
   cursor: pointer;
   background-color: #CF1C8E;
   text-transform: uppercase;
+`;
+
+const StyledLink = styled.a`
+  font-family: "GT America CM";
+  font-size: 22px;
+  color: #FFFFFF;
+  margin-right: 28px;
+  letter-spacing: 0.59px;
 `;
 
 export default Header;

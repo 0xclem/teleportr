@@ -223,7 +223,11 @@ const Swapper = () => {
           }}>Use Max Portable: 0.05ETH</MaxPortableButton>
           
           <GradientButtonWrapper>
-            <GradientButton onClick={handleDeposit}>Connect Wallet</GradientButton>
+            {walletAddress ? (
+              <TeleportButton>Teleport Currency</TeleportButton>
+            ) : (
+              <GradientButton onClick={handleDeposit}>Connect Wallet</GradientButton>
+            )}
           </GradientButtonWrapper>
         </MainForm>
       </GradientBoxWrapper>
@@ -363,6 +367,10 @@ const GradientButton = styled.button`
   text-transform: uppercase;
   font-family: "GT America CM";
   letter-spacing: 0.46px;
+`;
+
+const TeleportButton = styled(GradientButton)`
+  background-color: rgba(0, 0, 0, 0.46);
 `;
 
 const MainFormInputContainer = styled.div`

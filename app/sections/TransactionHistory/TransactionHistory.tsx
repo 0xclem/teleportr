@@ -116,6 +116,8 @@ const TransactionHistory = () => {
   );
 };
 
+// Address, Confirmations, Date, Time, Transaction Link.
+
 const Wrapper = styled.div`
   /* border-top: 2px solid black; */
 `;
