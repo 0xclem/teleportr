@@ -6,7 +6,7 @@ import Connector from "../../containers/Connector";
 
 const START_BLOCK = 13047837;
 const CONFIRMATIONS = 21;
-const ETHERSCAN_URL = "https://etherscan.io";
+// const ETHERSCAN_URL = "https://etherscan.io";
 const EXPLORER_URL = "https://optimistic.etherscan.io";
 
 type Transaction = {

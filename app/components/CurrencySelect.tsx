@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import styled from 'styled-components';
+import { useState } from "react";
+import styled from "styled-components";
 
 const GradientButtonWrapper = styled.div<{ isOpen: boolean }>`
   display: flex;
@@ -7,8 +7,14 @@ const GradientButtonWrapper = styled.div<{ isOpen: boolean }>`
   justify-content: center;
   width: 100%;
   height: 60px;
-  background: linear-gradient(90deg, #170557 0%, #4489CE 0%, #944BA9 100%, #00D1FF 100%);
-  border-radius: ${({ isOpen }) => isOpen ? '16px 16px 0 0' : '16px'};
+  background: linear-gradient(
+    90deg,
+    #170557 0%,
+    #4489ce 0%,
+    #944ba9 100%,
+    #00d1ff 100%
+  );
+  border-radius: ${({ isOpen }) => (isOpen ? "16px 16px 0 0" : "16px")};
 `;
 
 const GradientButton = styled.button<{ isOpen: boolean }>`
@@ -16,9 +22,9 @@ const GradientButton = styled.button<{ isOpen: boolean }>`
   height: calc(100% - 8px);
   cursor: pointer;
   background-color: #060134;
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
-  border-radius: ${({ isOpen }) => isOpen ? '12px 12px 0 0' : '12px'};
+  border-radius: ${({ isOpen }) => (isOpen ? "12px 12px 0 0" : "12px")};
   font-size: 17px;
   text-transform: uppercase;
   font-family: "GT America CM";
@@ -30,7 +36,7 @@ const GradientButton = styled.button<{ isOpen: boolean }>`
   padding: 8px 16px;
 
   .sc {
-    color: #00D0FE;
+    color: #00d0fe;
     text-transform: uppercase;
     font-size: 17px;
     font-family: "GT America Condensed Bold";
@@ -42,7 +48,7 @@ const GradientButton = styled.button<{ isOpen: boolean }>`
   p {
     font-size: 17px;
     letter-spacing: 0.46px;
-    color: #FFFFFF;
+    color: #ffffff;
     text-transform: uppercase;
     margin: 0;
   }
@@ -50,22 +56,22 @@ const GradientButton = styled.button<{ isOpen: boolean }>`
 
 const currencies = [
   {
-    key: 'sUSD',
-    name: 'Synthetic US Dollars'
+    key: "sUSD",
+    name: "Synthetic US Dollars",
   },
   {
-    key: 'sSNX',
-    name: 'Synthetix Token'
+    key: "sSNX",
+    name: "Synthetix Token",
   },
   {
-    key: 'sEuro',
-    name: 'Synthetic Euro'
-  }
-]
+    key: "sEuro",
+    name: "Synthetic Euro",
+  },
+];
 
 const CurrencySelect = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -76,22 +82,26 @@ const CurrencySelect = () => {
       <GradientButtonWrapper isOpen={isOpen}>
         <GradientButton onClick={handleToggle} isOpen={isOpen}>
           {/* eslint-disable-next-line */}
-          <img src='/img/control-panel-arrow.svg' alt='Conrol Panel Arrow' />
+          <DropdownImage
+            isOpen={isOpen}
+            src="/img/control-panel-arrow.svg"
+            alt="Conrol Panel Arrow"
+          />
           <div>
-            <p className='sc'>Select currency</p>
-            <p>Ethereum ($eth)</p>
+            <p className="sc">Select currency</p>
+            <p>Ethereum (ETH)</p>
           </div>
           {/* eslint-disable-next-line */}
-          <img src='/img/sUSD-symbol.svg' alt='sUSD Symbol' />
+          <img src="/img/sETH-symbol.svg" alt="sUSD Symbol" />
         </GradientButton>
       </GradientButtonWrapper>
       {isOpen && (
         <CurrencyListWrapper>
           <CurrencyList>
             <CurrencySearchBox
-              placeholder='Search Synths'
+              placeholder="Search Synths"
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </CurrencyList>
         </CurrencyListWrapper>
@@ -110,7 +120,13 @@ const CurrencyListWrapper = styled.div`
   align-items: center;
 
   border-radius: 0 0 16px 16px;
-  background: linear-gradient(90deg, #170557 0%, #4489CE 0%, #944BA9 100%, #00D1FF 100%);
+  background: linear-gradient(
+    90deg,
+    #170557 0%,
+    #4489ce 0%,
+    #944ba9 100%,
+    #00d1ff 100%
+  );
   width: 316px;
   height: 208px;
 `;
@@ -129,17 +145,22 @@ const CurrencyList = styled.div`
 const CurrencySearchBox = styled.input`
   width: 100%;
   margin: 4px;
-  background-color: #1C1541;
+  background-color: #1c1541;
   padding: 8px;
   border: none;
   font-family: "GT America CM";
   border-radius: 7px;
   font-size: 15px;
-  color: #FFFFFF;
+  color: #ffffff;
 
   &:focus {
     outline: none;
   }
+`;
+
+const DropdownImage = styled.img<{ isOpen: boolean }>`
+  ${({ isOpen }) => isOpen && `transform: rotateX(180deg);`}
+  width: 35px;
 `;
 
 export default CurrencySelect;
