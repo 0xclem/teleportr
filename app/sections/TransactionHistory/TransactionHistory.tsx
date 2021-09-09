@@ -18,8 +18,12 @@ type Transaction = {
 };
 
 const TransactionHistory = () => {
-  const { depositContract, walletAddress, provider, providerL2 } =
-    Connector.useContainer();
+  const {
+    depositContract,
+    walletAddress,
+    provider,
+    providerL2,
+  } = Connector.useContainer();
   const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [currentBlock, setCurrentBlock] = useState<number | null>(null);
 
@@ -63,54 +67,81 @@ const TransactionHistory = () => {
   return (
     <Wrapper>
       <TitleText>Transaction History</TitleText>
-      <ConnectText>
-        Connect your wallet to view your transaction history.
-      </ConnectText>
+      {!walletAddress && (
+        <ConnectText>
+          Connect your wallet to view your transaction history.
+        </ConnectText>
+      )}
+      <TableRow>
+        <TableHeaderText>Address</TableHeaderText>
+        <TableHeaderText>Confirmations</TableHeaderText>
+        <TableHeaderText>Date</TableHeaderText>
+        <TableHeaderText>Time</TableHeaderText>
+        <TableHeaderText>Trx Link</TableHeaderText>
+      </TableRow>
       <Transactions>
-        {/* <RowRight>
-          <RefreshButton onClick={fetchTransactions}>Refresh</RefreshButton>
-        </RowRight> */}
-        {currentBlock && transactions && transactions.length > 0 ? (
-          transactions.map((tx) => {
-            return (
-              <Transaction key={tx.hash}>
-                <div>
-                  Hash:{" "}
-                  <Link
-                    href={`${ETHERSCAN_URL}/tx/${tx.hash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {tx.hash}
-                  </Link>
-                </div>
-                <div>Block: {tx.blockNumber} </div>
-                <div>
-                  Date: {format(new Date(tx.timestamp), "dd/MM/Y, h:mm aaa")}{" "}
-                </div>
-                <div>{`Confirmations: ${
-                  currentBlock - tx.blockNumber > CONFIRMATIONS
-                    ? CONFIRMATIONS
-                    : currentBlock - tx.blockNumber
-                }/${CONFIRMATIONS}`}</div>
-                <div>Amount: {tx.amount} ether</div>
-                <div>
-                  <Link
-                    href={`${EXPLORER_URL}/address/${walletAddress}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Check status on OE explorer
-                  </Link>
-                </div>
-              </Transaction>
-            );
-          })
-        ) : walletAddress ? (
-          <div>No Transaction for this wallet</div>
-        ) : (
-          <div>Please connect your wallet using Metamask</div>
-        )}
+        {currentBlock && transactions && transactions.length > 0
+          ? transactions.map((tx) => {
+              return (
+                <>
+                  <TableBodyRow>
+                    <div>{walletAddress}</div>
+                    <div>
+                      {`${
+                        currentBlock - tx.blockNumber > CONFIRMATIONS
+                          ? CONFIRMATIONS
+                          : currentBlock - tx.blockNumber
+                      }/${CONFIRMATIONS}`}
+                    </div>
+                    <div>{format(new Date(tx.timestamp), "dd/MM/Y")}</div>
+                    <div>{format(new Date(tx.timestamp), "h:mm aaa")}</div>
+                    <div>
+                      <Link
+                        href={`${EXPLORER_URL}/address/${walletAddress}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Check status on OE explorer
+                      </Link>
+                    </div>
+                  </TableBodyRow>
+                  {/*<Transaction key={tx.hash}>
+                  <div>
+                    Hash:{" "}
+                    <Link
+                      href={`${ETHERSCAN_URL}/tx/${tx.hash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {tx.hash}
+                    </Link>
+                  </div>
+                  <div>Block: {tx.blockNumber} </div>
+                  <div>
+                    Date: {format(new Date(tx.timestamp), "dd/MM/Y, h:mm aaa")}{" "}
+                  </div>
+                  <div>{`Confirmations: ${
+                    currentBlock - tx.blockNumber > CONFIRMATIONS
+                      ? CONFIRMATIONS
+                      : currentBlock - tx.blockNumber
+                  }/${CONFIRMATIONS}`}</div>
+                  <div>Amount: {tx.amount} ether</div>
+                  <div>
+                    <Link
+                      href={`${EXPLORER_URL}/address/${walletAddress}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Check status on OE explorer
+                    </Link>
+                  </div>
+									</Transaction>*/}
+                </>
+              );
+            })
+          : walletAddress && (
+              <ConnectText>No transactions for this wallet yet.</ConnectText>
+            )}
       </Transactions>
     </Wrapper>
   );
@@ -123,41 +154,55 @@ const Wrapper = styled.div`
 `;
 
 const TitleText = styled.h1`
+  position: relative;
+  top: -30px;
   font-family: "GT America CM";
   letter-spacing: 1.16px;
   margin-bottom: 5px;
   text-align: center;
   text-transform: uppercase;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 43px;
   margin-top: 0px;
 `;
 
 const ConnectText = styled.p`
   font-family: "Inter", sans-serif;
-  color:#FFFFFF;
+  color: #ffffff;
   font-size: 21px;
   letter-spacing: 0.57px;
   text-align: center;
 `;
 
-const RowRight = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: flex-end;
-  margin-bottom: 10px;
+const TableRow = styled.div`
+  display: grid;
+  margin: 30px auto 0;
+  width: 1327px;
+  max-width: 90%;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+  height: 40px;
+  border-bottom: 2px solid #bd18d4;
 `;
 
-const RefreshButton = styled.button`
-  text-align: right;
+const TableBodyRow = styled.div`
+  display: grid;
+  margin: 0 auto;
+  width: 1327px;
+  max-width: 90%;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
   height: 40px;
-  background: none;
-  border: 2px solid #25283d;
-  font-family: "Fjalla One", sans-serif;
-  color: #25283d;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 20px 0;
+  border-bottom: 1px solid #bd18d4;
+`;
+
+const TableHeaderText = styled.div`
+  display: flex;
+  align-items: center;
+  font-family: "GT America CM";
+  text-transform: uppercase;
+  letter-spacing: 0.59px;
+  color: #00d0fe;
+  margin-bottom: 12px;
 `;
 
 const Transactions = styled.div`
