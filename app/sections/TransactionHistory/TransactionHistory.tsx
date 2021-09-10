@@ -3,11 +3,12 @@ import styled from "styled-components";
 import { format } from "date-fns";
 
 import Connector from "../../containers/Connector";
+import { truncateAddress } from "../../utils/wallet";
 
 const START_BLOCK = 13047837;
 const CONFIRMATIONS = 21;
-// const ETHERSCAN_URL = "https://etherscan.io";
-const EXPLORER_URL = "https://optimistic.etherscan.io";
+const ETHERSCAN_URL = "https://etherscan.io";
+// const EXPLORER_URL = "https://optimistic.etherscan.io";
 
 type Transaction = {
   hash: string;
@@ -73,70 +74,40 @@ const TransactionHistory = () => {
         </ConnectText>
       )}
       <TableRow>
-        <TableHeaderText>Address</TableHeaderText>
-        <TableHeaderText>Confirmations</TableHeaderText>
-        <TableHeaderText>Date</TableHeaderText>
-        <TableHeaderText>Time</TableHeaderText>
-        <TableHeaderText>Trx Link</TableHeaderText>
+        <div>Address</div>
+        <div>Confirmations</div>
+        <div>Date</div>
+        <div>Time</div>
+        <div>Trx Link</div>
       </TableRow>
       <Transactions>
         {currentBlock && transactions && transactions.length > 0
           ? transactions.map((tx) => {
               return (
-                <>
-                  <TableBodyRow>
-                    <div>{walletAddress}</div>
-                    <div>
-                      {`${
-                        currentBlock - tx.blockNumber > CONFIRMATIONS
-                          ? CONFIRMATIONS
-                          : currentBlock - tx.blockNumber
-                      }/${CONFIRMATIONS}`}
-                    </div>
-                    <div>{format(new Date(tx.timestamp), "dd/MM/Y")}</div>
-                    <div>{format(new Date(tx.timestamp), "h:mm aaa")}</div>
-                    <div>
-                      <Link
-                        href={`${EXPLORER_URL}/address/${walletAddress}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Check status on OE explorer
-                      </Link>
-                    </div>
-                  </TableBodyRow>
-                  {/*<Transaction key={tx.hash}>
+                <TableBodyRow key={tx.hash}>
                   <div>
-                    Hash:{" "}
+                    <AddressCircle />
+                    {truncateAddress(walletAddress || "")}
+                  </div>
+                  <div>
+                    {`${
+                      currentBlock - tx.blockNumber > CONFIRMATIONS
+                        ? CONFIRMATIONS
+                        : currentBlock - tx.blockNumber
+                    }/${CONFIRMATIONS}`}
+                  </div>
+                  <div>{format(new Date(tx.timestamp), "dd/MM/Y")}</div>
+                  <div>{format(new Date(tx.timestamp), "h:mm aaa")}</div>
+                  <div>
                     <Link
                       href={`${ETHERSCAN_URL}/tx/${tx.hash}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {tx.hash}
+                      {truncateAddress(tx.hash || "")}
                     </Link>
                   </div>
-                  <div>Block: {tx.blockNumber} </div>
-                  <div>
-                    Date: {format(new Date(tx.timestamp), "dd/MM/Y, h:mm aaa")}{" "}
-                  </div>
-                  <div>{`Confirmations: ${
-                    currentBlock - tx.blockNumber > CONFIRMATIONS
-                      ? CONFIRMATIONS
-                      : currentBlock - tx.blockNumber
-                  }/${CONFIRMATIONS}`}</div>
-                  <div>Amount: {tx.amount} ether</div>
-                  <div>
-                    <Link
-                      href={`${EXPLORER_URL}/address/${walletAddress}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Check status on OE explorer
-                    </Link>
-                  </div>
-									</Transaction>*/}
-                </>
+                </TableBodyRow>
               );
             })
           : walletAddress && (
@@ -179,9 +150,20 @@ const TableRow = styled.div`
   margin: 30px auto 0;
   width: 1327px;
   max-width: 90%;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
   height: 40px;
   border-bottom: 2px solid #bd18d4;
+
+  div {
+    display: flex;
+    align-items: center;
+    font-family: "GT America CM";
+    font-size: 22px;
+    text-transform: uppercase;
+    letter-spacing: 0.59px;
+    color: #00d0fe;
+    margin-bottom: 12px;
+  }
 `;
 
 const TableBodyRow = styled.div`
@@ -189,36 +171,37 @@ const TableBodyRow = styled.div`
   margin: 0 auto;
   width: 1327px;
   max-width: 90%;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
-  height: 40px;
-  padding: 20px 0;
-  border-bottom: 1px solid #bd18d4;
-`;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  height: 70px;
+  border-bottom: 1px solid rgb(85, 62, 80);
 
-const TableHeaderText = styled.div`
-  display: flex;
-  align-items: center;
-  font-family: "GT America CM";
-  text-transform: uppercase;
-  letter-spacing: 0.59px;
-  color: #00d0fe;
-  margin-bottom: 12px;
+  div {
+    display: flex;
+    align-items: center;
+    font-family: "GT America CM";
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 0.59px;
+    color: #ffffff;
+  }
 `;
 
 const Transactions = styled.div`
-  margin: 20px 0;
-`;
-
-const Transaction = styled.div`
-  border: 2px solid black;
-  padding: 20px;
-  margin: 10px 0;
+  // margin: 20px 0;
 `;
 
 const Link = styled.a`
   font-weight: bold;
   text-decoration: underline;
   cursor: pointer;
+`;
+
+const AddressCircle = styled.div`
+  background-color: rgb(193, 33, 204);
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
 `;
 
 export default TransactionHistory;
