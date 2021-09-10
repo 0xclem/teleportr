@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Link from 'next/link';
+import Link from "next/link";
 
 import Connector from "../../containers/Connector";
 import { truncateAddress } from "../../utils/wallet";
@@ -14,14 +14,22 @@ const Header = () => {
   return (
     <HeaderWrapper>
       {/* eslint-disable-next-line */}
-      <img src='/img/teleportr-logo.svg' alt='Teleportr Logo' />
+      <img src="/img/teleportr-logo.svg" alt="Teleportr Logo" />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Link href='/faq' passHref>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Link href="/faq" passHref>
           <StyledLink>FAQ</StyledLink>
         </Link>
         <Button onClick={handleConnectWallet}>
-          {walletAddress ? truncateAddress(walletAddress): 'Connect wallet'}
+          {walletAddress
+            ? `${truncateAddress(walletAddress)} MAINNET`
+            : "Connect wallet"}
         </Button>
       </div>
     </HeaderWrapper>
@@ -37,24 +45,24 @@ const HeaderWrapper = styled.div`
 
 const Button = styled.button`
   height: 40px;
-  min-width: 196px;
+  min-width: 222px;
   background: none;
   border: none;
   font-family: "GT America Bold";
   font-size: 13px;
   letter-spacing: 0.35px;
-  color: #FFFFFF;
+  color: #ffffff;
   font-weight: bold;
   border-radius: 20px;
   cursor: pointer;
-  background-color: #CF1C8E;
+  background-color: #cf1c8e;
   text-transform: uppercase;
 `;
 
 const StyledLink = styled.a`
   font-family: "GT America CM";
   font-size: 22px;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-right: 28px;
   letter-spacing: 0.59px;
 `;

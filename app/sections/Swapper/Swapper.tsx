@@ -20,8 +20,14 @@ type EtherBalance = {
 };
 
 const Swapper = () => {
-  const { depositContract, walletAddress, provider, signer, providerL2, walletL2 } =
-    Connector.useContainer();
+  const {
+    depositContract,
+    walletAddress,
+    provider,
+    signer,
+    providerL2,
+    walletL2,
+  } = Connector.useContainer();
   const [contractInfo, setContractInfo] = useState<ContractInfo | null>(null);
   const [ethBalance, setEthBalance] = useState<EtherBalance | null>(null);
   const [burnerWalletBalance, setBurnerWalletBalance] = useState<number | null>(
@@ -33,7 +39,13 @@ const Swapper = () => {
 
   useEffect(() => {
     const fetchContractData = async () => {
-      if (!walletAddress || !depositContract || !provider || !providerL2 || !walletL2)
+      if (
+        !walletAddress ||
+        !depositContract ||
+        !provider ||
+        !providerL2 ||
+        !walletL2
+      )
         return;
       try {
         const [
@@ -173,65 +185,87 @@ const Swapper = () => {
 
     </Wrapper> */
     <>
-    <MainContainer>
-      <GradientBoxWrapper>
-        <GradientBox>
-          <BoxSplit>
-            <p>My balance: {ethBalance?.balance ?? 0}</p>
-            <div style={{ display: 'flex' }}>
-              {/* eslint-disable-next-line */}
-              <img src='/img/eth-icon-circle.svg' alt='ETH Icon' />
-              <div style={{marginLeft: 8}}>
-                <h3>Ethereum</h3>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {/* eslint-disable-next-line */}
-                  <img src='/img/control-panel-arrow.svg' alt='Arrow' style={{ marginRight: 8 }} />
-                  <h2>L1</h2>
+      <MainContainer>
+        <GradientBoxWrapper>
+          <GradientBox>
+            <BoxSplit>
+              <p>My balance: {ethBalance?.balance ?? 0}</p>
+              <div style={{ display: "flex" }}>
+                {/* eslint-disable-next-line */}
+                <img src="/img/eth-icon-circle.svg" alt="ETH Icon" />
+                <div style={{ marginLeft: 8 }}>
+                  <h3>Ethereum</h3>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    {/* eslint-disable-next-line */}
+                    <img
+                      src="/img/control-panel-arrow.svg"
+                      alt="Arrow"
+                      style={{ marginRight: 8 }}
+                    />
+                    <h2>L1</h2>
+                  </div>
                 </div>
               </div>
-            </div>
-          </BoxSplit>
+            </BoxSplit>
 
-          <BoxSplit>
-            <p>Contract balance: x/4 ETH</p>
-            <div style={{ display: 'flex'}}>
-              {/* eslint-disable-next-line */}
-              <img src='/img/op-icon-circle.svg' alt='ETH Icon' />
-              <div style={{ marginLeft: 8, alignItems: 'center' }}>
-                <h3>Optimism</h3>
+            <BoxSplit>
+              <p>Contract balance: x/4 ETH</p>
+              <div style={{ display: "flex" }}>
+                {/* eslint-disable-next-line */}
+                <img src="/img/op-icon-circle.svg" alt="ETH Icon" />
+                <div style={{ marginLeft: 8, alignItems: "center" }}>
+                  <h3>Optimism</h3>
 
-                <div style={{ display: 'flex'}}>
-                  {/* eslint-disable-next-line */}
-                  <img src='/img/control-panel-arrow.svg' alt='Arrow' style={{ marginRight: 8 }} />
-                <h2>L2</h2>
+                  <div style={{ display: "flex" }}>
+                    {/* eslint-disable-next-line */}
+                    <img
+                      src="/img/control-panel-arrow.svg"
+                      alt="Arrow"
+                      style={{ marginRight: 8 }}
+                    />
+                    <h2>L2</h2>
+                  </div>
                 </div>
               </div>
-            </div>
-          </BoxSplit>
+            </BoxSplit>
+          </GradientBox>
+          <MainForm>
+            <CurrencySelect />
 
-        </GradientBox>
-        <MainForm>
-          <CurrencySelect />
+            <MainFormInputContainer>
+              <MainFormInputLabel>Deposit</MainFormInputLabel>
+              <MainFormInput
+                placeholder="0.05"
+                type="number"
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+              />
+            </MainFormInputContainer>
 
-          <MainFormInputContainer>
-            <MainFormInputLabel>Deposit</MainFormInputLabel>
-            <MainFormInput placeholder='0.05' type='number' value={depositAmount} onChange={e => setDepositAmount(e.target.value)} />
-          </MainFormInputContainer>
+            <MaxPortableButton
+              onClick={() => {
+                setDepositAmount(
+                  contractInfo?.maxDepositAmount.toString() ?? "0.05"
+                );
+              }}
+            >
+              Use Max Portable: 0.05ETH
+            </MaxPortableButton>
 
-          <MaxPortableButton onClick={() => {
-            setDepositAmount(contractInfo?.maxDepositAmount.toString() ?? '0.05');
-          }}>Use Max Portable: 0.05ETH</MaxPortableButton>
-          
-          <GradientButtonWrapper>
-            {walletAddress ? (
-              <TeleportButton>Teleport Currency</TeleportButton>
-            ) : (
-              <GradientButton onClick={handleDeposit}>Connect Wallet</GradientButton>
-            )}
-          </GradientButtonWrapper>
-        </MainForm>
-      </GradientBoxWrapper>
-    </MainContainer>
+            <GradientButtonWrapper>
+              {walletAddress ? (
+                <TeleportButton disabled={!!error || !gasLimit}>
+                  Teleport Currency
+                </TeleportButton>
+              ) : (
+                <GradientButton onClick={handleDeposit}>
+                  Connect Wallet
+                </GradientButton>
+              )}
+            </GradientButtonWrapper>
+          </MainForm>
+        </GradientBoxWrapper>
+      </MainContainer>
     </>
   );
 };
@@ -312,7 +346,13 @@ const GradientBoxWrapper = styled.div`
   align-items: center;
   height: 185px;
   width: 90%;
-  background: linear-gradient(90deg, #170557 0%, #00D1FF 0%, #E12096 100%, #00D1FF 100%);
+  background: linear-gradient(
+    90deg,
+    #170557 0%,
+    #00d1ff 0%,
+    #e12096 100%,
+    #00d1ff 100%
+  );
   margin: 0 auto;
   border-radius: 20px;
 `;
@@ -351,7 +391,13 @@ const GradientButtonWrapper = styled.div`
   justify-content: center;
   width: 100%;
   height: 60px;
-  background: linear-gradient(90deg, #170557 0%, #4489CE 0%, #944BA9 100%, #00D1FF 100%);
+  background: linear-gradient(
+    90deg,
+    #170557 0%,
+    #4489ce 0%,
+    #944ba9 100%,
+    #00d1ff 100%
+  );
   border-radius: 16px;
 `;
 
@@ -360,7 +406,7 @@ const GradientButton = styled.button`
   height: calc(100% - 8px);
   cursor: pointer;
   background-color: #060134;
-  color: #FFFFFF;
+  color: #ffffff;
   border: none;
   border-radius: 12px;
   font-size: 17px;
@@ -374,7 +420,7 @@ const TeleportButton = styled(GradientButton)`
 `;
 
 const MainFormInputContainer = styled.div`
-  background-color:#1C1541;
+  background-color: #1c1541;
   height: 48px;
   border-radius: 6px;
   padding: 0 14px;
@@ -386,7 +432,7 @@ const MainFormInputContainer = styled.div`
 
 const MainFormInputLabel = styled.p`
   text-transform: uppercase;
-  color: #FFFFFF;
+  color: #ffffff;
   opacity: 0.74;
   font-size: 15px;
   font-family: "GT America Bold";
@@ -394,7 +440,7 @@ const MainFormInputLabel = styled.p`
 `;
 
 const MainFormInput = styled.input`
-  color: #FFFFFF;
+  color: #ffffff;
   opacity: 0.74;
   font-size: 15px;
   height: 100%;
@@ -411,7 +457,7 @@ const MainFormInput = styled.input`
 
 const MaxPortableButton = styled.button`
   background-color: transparent;
-  color: #00D0FE;
+  color: #00d0fe;
   text-transform: uppercase;
   font-size: 17px;
   border: none;
@@ -421,16 +467,16 @@ const MaxPortableButton = styled.button`
 `;
 
 const BoxSplit = styled.div`
-  height: 100%;  
+  height: 100%;
   padding-top: 10px;
   padding-left: 18px;
-  color: #FFFFFF;
+  color: #ffffff;
 
   p {
     font-family: "GT America CM";
     letter-spacing: 0.43px;
     font-size: 16px;
-    color: #9E9CB0;
+    color: #9e9cb0;
     text-align: center;
   }
 
