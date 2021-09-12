@@ -100,3 +100,14 @@ h6 {
   background-size: cover;
   height: 105vh;
 }
+
+.faq-section {
+  position: relative;
+  z-index: 0;
+  background-image: url("/img/teleportr-landing-hero-bg.jpg");
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: -1px;
+  height: 100vh;
+}

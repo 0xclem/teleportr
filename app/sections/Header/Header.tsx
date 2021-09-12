@@ -13,8 +13,14 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      {/* eslint-disable-next-line */}
-      <img src="/img/teleportr-logo.svg" alt="Teleportr Logo" />
+      <Link href="/" passHref>
+        {/* eslint-disable-next-line */}
+        <img
+          src="/img/teleportr-logo.svg"
+          alt="Teleportr Logo"
+          style={{ cursor: "pointer" }}
+        />
+      </Link>
 
       <div
         style={{
