@@ -20,7 +20,7 @@ const GradientButtonWrapper = styled.div<{ isOpen: boolean }>`
 const GradientButton = styled.button<{ isOpen: boolean }>`
   width: calc(100% - 8px);
   height: calc(100% - 8px);
-  cursor: pointer;
+  cursor: not-allowed;
   background-color: #060134;
   color: #ffffff;
   border: none;
@@ -69,6 +69,9 @@ const currencies = [
   },
 ];
 
+// Note: The currency select feature is currently disabled (see line 85).
+// This is because this application only supports swapping ETH for now.
+
 const CurrencySelect = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -80,7 +83,7 @@ const CurrencySelect = () => {
   return (
     <>
       <GradientButtonWrapper isOpen={isOpen}>
-        <GradientButton onClick={handleToggle} isOpen={isOpen}>
+        <GradientButton onClick={handleToggle} isOpen={isOpen} disabled>
           {/* eslint-disable-next-line */}
           <DropdownImage
             isOpen={isOpen}
