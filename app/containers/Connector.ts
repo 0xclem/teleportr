@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import { createContainer } from "unstated-next";
 import { ethers, Contract } from "ethers";
-// import { useRecoilValue } from "recoil";
 import { Wallet as OnboardWallet } from "bnc-onboard/dist/src/interfaces";
 
 import { initOnboard, MAINNET_NETWORK_ID } from "./walletConfig";
 
-// import { walletState } from "../store/wallet";
 import { contract as depositContractData } from "../contracts/BridgeDeposit";
 
 const OVM_JSON_RPC_URL = "https://mainnet.optimism.io";
@@ -15,7 +13,6 @@ const walletL2 = "0x59C47ceC65ad592F6C83ABd020BfD8fF0172D77D";
 const WALLET_STORAGE_KEY = "cachedWallet";
 
 const useConnector = () => {
-  // const [network, setNetwork] = useState<number | null>(null);
   const [provider, setProvider] = useState<ethers.providers.Provider | null>(
     null
   );
@@ -122,32 +119,10 @@ const useConnector = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!connectedWallet) return;
-  //   const web3Provider = new providers.Web3Provider(
-  //     window.ethereum as providers.ExternalProvider
-  //   );
-  //   const web3ProviderL2 = new ethers.providers.JsonRpcProvider(
-  //     OVM_JSON_RPC_URL,
-  //     OVM_NETWORK_ID
-  //   );
-  //   const contract = new Contract(
-  //     depositContractData.address,
-  //     depositContractData.abi,
-  //     web3Provider
-  //   );
-  //   setProvider(web3Provider);
-  //   setProviderL2(web3ProviderL2);
-  //   setSigner(web3Provider.getSigner());
-  //   setDepositContract(contract);
-  // }, [connectedWallet]);
-
   return {
-    // network,
     provider,
     signer,
     depositContract,
-    // wallet: connectedWallet,
     walletAddress,
     walletL2,
     providerL2,
