@@ -23,9 +23,9 @@ const Header = () => {
       </Link>
 
       <div>
-        <Link href="/faq" passHref>
+        {/*<Link href="/faq" passHref>
           <StyledLink>FAQ</StyledLink>
-        </Link>
+				</Link>*/}
         <Button onClick={handleConnectWallet}>
           {walletAddress ? (
             <>
