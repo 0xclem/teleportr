@@ -22,20 +22,24 @@ const Header = () => {
         />
       </Link>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div>
         <Link href="/faq" passHref>
           <StyledLink>FAQ</StyledLink>
         </Link>
         <Button onClick={handleConnectWallet}>
-          {walletAddress
-            ? `${truncateAddress(walletAddress)} MAINNET`
-            : "Connect wallet"}
+          {walletAddress ? (
+            <>
+              {`${truncateAddress(walletAddress)} MAINNET`}
+              {/* eslint-disable-next-line */}
+              <img
+                src="/img/connect-wallet-arrow.svg"
+                alt="Connect Wallet Arrow"
+                style={{ marginLeft: "6px" }}
+              />
+            </>
+          ) : (
+            "Connect wallet"
+          )}
         </Button>
       </div>
     </HeaderWrapper>
@@ -47,6 +51,12 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 `;
 
 const Button = styled.button`
