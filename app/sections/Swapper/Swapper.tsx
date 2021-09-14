@@ -27,6 +27,7 @@ const Swapper = () => {
     signer,
     providerL2,
     walletL2,
+    connectWallet,
   } = Connector.useContainer();
   const [contractInfo, setContractInfo] = useState<ContractInfo | null>(null);
   const [ethBalance, setEthBalance] = useState<EtherBalance | null>(null);
@@ -133,57 +134,6 @@ const Swapper = () => {
   };
 
   return (
-    /* <Wrapper>
-      <Data>
-        <DataElement>
-          {"Deposit contract: "}
-          {depositContract && depositContract.address ? (
-            <DataLink
-              href={`${ETHERSCAN_URL}/address/${depositContract.address}`}
-              target="_blank"
-            >
-              {depositContract.address}
-            </DataLink>
-          ) : (
-            "--"
-          )}
-        </DataElement>
-        <DataElement>
-          {`Max deposit amount: ${contractInfo?.maxDepositAmount ?? "--"} eth`}
-        </DataElement>
-        <DataElement>
-          {`Max contract balance: ${contractInfo?.maxBalance ?? "--"} eth`}
-        </DataElement>
-        <DataElement>
-          {`Deposits enabled: ${contractInfo?.isEnabled ?? "--"}`}
-        </DataElement>
-      </Data>
-      <RowCentered>
-        <Column>
-          <Balance>
-            Balance:
-            <BalanceButton
-              onClick={() =>
-                setDepositAmount(ethBalance?.balance?.toString() ?? "0")
-              }
-            >{` ${ethBalance?.balance ?? 0}`}</BalanceButton>
-          </Balance>
-          <Input
-            type="text"
-            placeholder="0"
-            value={depositAmount}
-            onChange={(e) => setDepositAmount(e.target.value)}
-          />
-          <DepositButton
-            onClick={handleDeposit}
-            disabled={!!error || !gasLimit}
-          >
-            {error || "Deposit"}
-          </DepositButton>
-        </Column>
-      </RowCentered>
-
-    </Wrapper> */
     <>
       <MainContainer>
         <GradientBoxWrapper>
@@ -254,11 +204,14 @@ const Swapper = () => {
 
             <GradientButtonWrapper>
               {walletAddress ? (
-                <TeleportButton disabled={!!error || !gasLimit}>
+                <TeleportButton
+                  disabled={!!error || !gasLimit}
+                  onClick={handleDeposit}
+                >
                   Teleport Currency
                 </TeleportButton>
               ) : (
-                <GradientButton onClick={handleDeposit}>
+                <GradientButton onClick={connectWallet}>
                   Connect Wallet
                 </GradientButton>
               )}
@@ -269,72 +222,6 @@ const Swapper = () => {
     </>
   );
 };
-
-const Wrapper = styled.div`
-  padding: 20px 0;
-`;
-const Data = styled.div``;
-const DataLink = styled.a`
-  text-decoration: underline;
-  cursor: pointer;
-`;
-const DataElement = styled.div``;
-const RowCentered = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 10px 0;
-`;
-const Input = styled.input`
-  border: 2px solid #25283d;
-  border-radius: 4px;
-  height: 38px;
-  text-align: right;
-  padding: 0 8px;
-  background: none;
-`;
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 300px;
-`;
-
-const Balance = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 2px;
-  font-size: 14px;
-`;
-
-const BalanceButton = styled.button`
-  margin-left: 4px;
-  text-align: right;
-  font-weight: bold;
-  outline: none;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-`;
-
-const DepositButton = styled.button`
-  margin-top: 8px;
-  border: 2px solid #25283d;
-  border-radius: 4px;
-  height: 38px;
-  padding: 0 20px;
-  outline: none;
-  background: lightgray;
-  cursor: pointer;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 100%;
-  font-family: "Fjalla One", sans-serif;
-  &:disabled {
-    color: #25283d;
-    opacity: 0.4;
-  }
-`;
 
 const MainContainer = styled.div`
   margin: auto;
