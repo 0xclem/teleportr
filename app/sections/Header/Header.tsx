@@ -62,7 +62,6 @@ const HeaderWrapper = styled.div`
 const Button = styled.button`
   height: 40px;
   min-width: 222px;
-  background: none;
   border: none;
   font-family: "GT America Bold";
   font-size: 13px;
@@ -75,12 +74,12 @@ const Button = styled.button`
   text-transform: uppercase;
 `;
 
-const StyledLink = styled.a`
-  font-family: "GT America CM";
-  font-size: 22px;
-  color: #ffffff;
-  margin-right: 28px;
-  letter-spacing: 0.59px;
-`;
+// const StyledLink = styled.a`
+//   font-family: "GT America CM";
+//   font-size: 22px;
+//   color: #ffffff;
+//   margin-right: 28px;
+//   letter-spacing: 0.59px;
+// `;
 
 export default Header;

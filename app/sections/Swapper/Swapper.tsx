@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
 
+import { contract as depositContractData } from "../../contracts/BridgeDeposit";
 import Connector from "../../containers/Connector";
 import CurrencySelect from "../../components/CurrencySelect";
 
@@ -11,6 +12,7 @@ const ETHERSCAN_URL = "https://etherscan.io";
 type ContractInfo = {
   maxDepositAmount: number;
   maxBalance: number;
+  contractBalance: number;
   isEnabled: boolean;
 };
 
@@ -55,16 +57,19 @@ const Swapper = () => {
           canReceive,
           ethBalance,
           burnerWalletEthBalance,
+          contractBalance,
         ] = await Promise.all([
           depositContract.getMaxDepositAmount(),
           depositContract.getMaxBalance(),
           depositContract.getCanReceiveDeposit(),
           provider.getBalance(walletAddress),
           providerL2.getBalance(walletL2),
+          provider.getBalance(depositContractData.address),
         ]);
         setContractInfo({
           maxDepositAmount: maxDepositAmount / 1e18,
           maxBalance: maxBalance / 1e18,
+          contractBalance: Number(contractBalance) / 1e18,
           isEnabled: !!canReceive,
         });
         setEthBalance({
@@ -104,7 +109,7 @@ const Swapper = () => {
       } catch (e) {
         console.log(e);
         // @ts-ignore
-        setError(e.message);
+        setError(e?.error?.message ?? e.message);
       }
     };
     getGasLimit();
@@ -134,97 +139,107 @@ const Swapper = () => {
   };
 
   return (
-    <>
-      <MainContainer>
-        <GradientBoxWrapper>
-          <GradientBox>
-            <BoxSplit>
-              <p>My balance: {ethBalance?.balance ?? 0}</p>
-              <div style={{ display: "flex" }}>
-                {/* eslint-disable-next-line */}
-                <img src="/img/eth-icon-circle.svg" alt="ETH Icon" />
-                <div style={{ marginLeft: 8 }}>
-                  <h3>Ethereum</h3>
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {/* eslint-disable-next-line */}
-                    <img
-                      src="/img/control-panel-arrow.svg"
-                      alt="Arrow"
-                      style={{ marginRight: 8 }}
-                    />
-                    <h2>L1</h2>
-                  </div>
+    <MainContainer>
+      <GradientBoxWrapper>
+        <GradientBox>
+          <BoxSplit>
+            <p>My balance: {ethBalance?.balance ?? 0} ETH</p>
+            <div style={{ display: "flex" }}>
+              {/* eslint-disable-next-line */}
+              <img src="/img/eth-icon-circle.svg" alt="ETH Icon" />
+              <div style={{ marginLeft: 8 }}>
+                <h3>Ethereum</h3>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {/* eslint-disable-next-line */}
+                  <img
+                    src="/img/control-panel-arrow.svg"
+                    alt="Arrow"
+                    style={{ marginRight: 8 }}
+                  />
+                  <h2>L1</h2>
                 </div>
               </div>
-            </BoxSplit>
+            </div>
+          </BoxSplit>
 
-            <BoxSplit>
-              <p>Contract balance: x/4 ETH</p>
-              <div style={{ display: "flex" }}>
-                {/* eslint-disable-next-line */}
-                <img src="/img/op-icon-circle.svg" alt="ETH Icon" />
-                <div style={{ marginLeft: 8, alignItems: "center" }}>
-                  <h3>Optimism</h3>
+          <BoxSplit>
+            <p>
+              Contract balance:{" "}
+              {contractInfo?.contractBalance?.toFixed(2) ?? "--"}/
+              {contractInfo?.maxBalance ?? "--"} ETH
+            </p>
+            <div style={{ display: "flex" }}>
+              {/* eslint-disable-next-line */}
+              <img src="/img/op-icon-circle.svg" alt="ETH Icon" />
+              <div style={{ marginLeft: 8, alignItems: "center" }}>
+                <h3>Optimism</h3>
 
-                  <div style={{ display: "flex" }}>
-                    {/* eslint-disable-next-line */}
-                    <img
-                      src="/img/control-panel-arrow.svg"
-                      alt="Arrow"
-                      style={{ marginRight: 8 }}
-                    />
-                    <h2>L2</h2>
-                  </div>
+                <div style={{ display: "flex" }}>
+                  {/* eslint-disable-next-line */}
+                  <img
+                    src="/img/control-panel-arrow.svg"
+                    alt="Arrow"
+                    style={{ marginRight: 8 }}
+                  />
+                  <h2>L2</h2>
                 </div>
               </div>
-            </BoxSplit>
-          </GradientBox>
-          <MainForm>
-            <CurrencySelect />
+            </div>
+          </BoxSplit>
+        </GradientBox>
+        <MainForm>
+          <CurrencySelect />
 
-            <MainFormInputContainer>
-              <MainFormInputLabel>Deposit</MainFormInputLabel>
-              <MainFormInput
-                placeholder="0.05"
-                type="number"
-                value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-              />
-            </MainFormInputContainer>
+          <MainFormInputContainer>
+            <MainFormInputLabel>Deposit</MainFormInputLabel>
+            <MainFormInput
+              placeholder="0.05"
+              type="number"
+              value={depositAmount}
+              onChange={(e) => setDepositAmount(e.target.value)}
+            />
+          </MainFormInputContainer>
 
-            <MaxPortableButton
-              onClick={() => {
-                setDepositAmount(
-                  contractInfo?.maxDepositAmount.toString() ?? "0.05"
-                );
-              }}
-            >
-              Use Max Portable: 0.05ETH
-            </MaxPortableButton>
+          <MaxPortableButton
+            onClick={() => {
+              setDepositAmount(
+                contractInfo?.maxDepositAmount.toString() ?? "0.05"
+              );
+            }}
+          >
+            Use Max Portable: {contractInfo?.maxDepositAmount ?? "--"}ETH
+          </MaxPortableButton>
 
-            <GradientButtonWrapper>
-              {walletAddress ? (
-                <TeleportButton
-                  disabled={!!error || !gasLimit}
-                  onClick={handleDeposit}
-                >
-                  Teleport Currency
-                </TeleportButton>
-              ) : (
-                <GradientButton onClick={connectWallet}>
-                  Connect Wallet
-                </GradientButton>
-              )}
-            </GradientButtonWrapper>
-          </MainForm>
-        </GradientBoxWrapper>
-      </MainContainer>
-    </>
+          <GradientButtonWrapper>
+            {walletAddress ? (
+              <TeleportButton
+                disabled={!!error || !gasLimit}
+                onClick={handleDeposit}
+              >
+                Teleport Currency
+              </TeleportButton>
+            ) : (
+              <GradientButton onClick={connectWallet}>
+                Connect Wallet
+              </GradientButton>
+            )}
+          </GradientButtonWrapper>
+        </MainForm>
+      </GradientBoxWrapper>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+    </MainContainer>
   );
 };
 
 const MainContainer = styled.div`
   margin: auto;
+`;
+
+const ErrorMessage = styled.div`
+  color: #cf1c8e;
+  margin-top: 50px;
+  font-family: "GT America CM";
+  font-size: 17px;
 `;
 
 const GradientBoxWrapper = styled.div`
@@ -300,10 +315,18 @@ const GradientButton = styled.button`
   text-transform: uppercase;
   font-family: "GT America CM";
   letter-spacing: 0.46px;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 `;
 
 const TeleportButton = styled(GradientButton)`
   background-color: rgba(0, 0, 0, 0.46);
+
+  &:disabled {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
 `;
 
 const MainFormInputContainer = styled.div`
@@ -320,7 +343,6 @@ const MainFormInputContainer = styled.div`
 const MainFormInputLabel = styled.p`
   text-transform: uppercase;
   color: #ffffff;
-  opacity: 0.74;
   font-size: 15px;
   font-family: "GT America Bold";
   letter-spacing: 0.41px;
@@ -328,7 +350,6 @@ const MainFormInputLabel = styled.p`
 
 const MainFormInput = styled.input`
   color: #ffffff;
-  opacity: 0.74;
   font-size: 15px;
   height: 100%;
   border: none;
@@ -336,6 +357,11 @@ const MainFormInput = styled.input`
   text-align: right;
   font-family: "GT America Bold";
   letter-spacing: 0.41px;
+
+  ::placeholder {
+    color: #bcbcbc;
+    opacity: 1;
+  }
 
   &:focus {
     outline: none;
