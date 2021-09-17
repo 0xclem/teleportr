@@ -8,7 +8,6 @@ import { truncateAddress } from "../../utils/wallet";
 const START_BLOCK = 13047837;
 const CONFIRMATIONS = 21;
 const ETHERSCAN_URL = "https://etherscan.io";
-// const EXPLORER_URL = "https://optimistic.etherscan.io";
 
 type Transaction = {
   hash: string;
@@ -66,7 +65,7 @@ const TransactionHistory = () => {
   }, [fetchTransactions]);
 
   return (
-    <Wrapper>
+    <div>
       <TitleText>Transaction History</TitleText>
       {!walletAddress && (
         <ConnectText>
@@ -74,20 +73,17 @@ const TransactionHistory = () => {
         </ConnectText>
       )}
       <TableRow>
-        <div>Address</div>
+        <div>Date & Time</div>
         <div>Confirmations</div>
-        <div>Date</div>
-        <div>Time</div>
         <div>Trx Link</div>
       </TableRow>
-      <Transactions>
+      <div>
         {currentBlock && transactions && transactions.length > 0
           ? transactions.map((tx) => {
               return (
                 <TableBodyRow key={tx.hash}>
                   <div>
-                    <AddressCircle />
-                    {truncateAddress(walletAddress || "")}
+                    {format(new Date(tx.timestamp), "dd/MM/Y h:mm aaa")}
                   </div>
                   <div>
                     {`${
@@ -96,8 +92,6 @@ const TransactionHistory = () => {
                         : currentBlock - tx.blockNumber
                     }/${CONFIRMATIONS}`}
                   </div>
-                  <div>{format(new Date(tx.timestamp), "dd/MM/Y")}</div>
-                  <div>{format(new Date(tx.timestamp), "h:mm aaa")}</div>
                   <div>
                     <Link
                       href={`${ETHERSCAN_URL}/tx/${tx.hash}`}
@@ -113,16 +107,10 @@ const TransactionHistory = () => {
           : walletAddress && (
               <ConnectText>No transactions for this wallet yet.</ConnectText>
             )}
-      </Transactions>
-    </Wrapper>
+      </div>
+    </div>
   );
 };
-
-// Address, Confirmations, Date, Time, Transaction Link.
-
-const Wrapper = styled.div`
-  /* border-top: 2px solid black; */
-`;
 
 const TitleText = styled.h1`
   position: relative;
@@ -150,7 +138,7 @@ const TableRow = styled.div`
   margin: 30px auto 0;
   width: 1327px;
   max-width: 90%;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   height: 40px;
   border-bottom: 2px solid #bd18d4;
 
@@ -171,7 +159,7 @@ const TableBodyRow = styled.div`
   margin: 0 auto;
   width: 1327px;
   max-width: 90%;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   height: 70px;
   border-bottom: 1px solid rgb(85, 62, 80);
 
@@ -186,22 +174,10 @@ const TableBodyRow = styled.div`
   }
 `;
 
-const Transactions = styled.div`
-  // margin: 20px 0;
-`;
-
 const Link = styled.a`
   font-weight: bold;
   text-decoration: underline;
   cursor: pointer;
-`;
-
-const AddressCircle = styled.div`
-  background-color: rgb(193, 33, 204);
-  height: 20px;
-  width: 20px;
-  border-radius: 50%;
-  margin-right: 8px;
 `;
 
 export default TransactionHistory;

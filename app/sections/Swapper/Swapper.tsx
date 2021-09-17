@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
+import Image from "next/image";
 
 import { contract as depositContractData } from "../../contracts/BridgeDeposit";
 import Connector from "../../containers/Connector";
 import CurrencySelect from "../../components/CurrencySelect";
+import controlPanelArrow from "../../public/img/control-panel-arrow.svg";
+import ethIconCircle from "../../public/img/eth-icon-circle.svg";
+import opIconCircle from "../../public/img/op-icon-circle.svg";
 
 const GAS_LIMIT_BUFFER = 1000;
-const ETHERSCAN_URL = "https://etherscan.io";
 
 type ContractInfo = {
   maxDepositAmount: number;
@@ -108,7 +111,6 @@ const Swapper = () => {
         setGasLimit(Number(gasEstimate) + GAS_LIMIT_BUFFER);
       } catch (e) {
         console.log(e);
-        // @ts-ignore
         setError(e?.error?.message ?? e.message);
       }
     };
@@ -125,7 +127,7 @@ const Swapper = () => {
     if (!signer || !depositContract || !gasLimit || !provider) return;
     try {
       const gasPrice = await provider.getGasPrice();
-      const tx = await signer.sendTransaction({
+      await signer.sendTransaction({
         to: depositContract.address,
         value: ethers.utils.parseEther(depositAmount.toString()),
         gasLimit,
@@ -133,7 +135,6 @@ const Swapper = () => {
       });
     } catch (e) {
       console.log(e);
-      // @ts-ignore
       setError(e.message);
     }
   };
@@ -145,17 +146,13 @@ const Swapper = () => {
           <BoxSplit>
             <p>My balance: {ethBalance?.balance ?? 0} ETH</p>
             <div style={{ display: "flex" }}>
-              {/* eslint-disable-next-line */}
-              <img src="/img/eth-icon-circle.svg" alt="ETH Icon" />
+              <Image src={ethIconCircle} alt="ETH Icon" />
               <div style={{ marginLeft: 8 }}>
                 <h3>Ethereum</h3>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  {/* eslint-disable-next-line */}
-                  <img
-                    src="/img/control-panel-arrow.svg"
-                    alt="Arrow"
-                    style={{ marginRight: 8 }}
-                  />
+                  <div style={{ marginRight: 8 }}>
+                    <Image src={controlPanelArrow} alt="Arrow" />
+                  </div>
                   <h2>L1</h2>
                 </div>
               </div>
@@ -169,18 +166,14 @@ const Swapper = () => {
               {contractInfo?.maxBalance ?? "--"} ETH
             </p>
             <div style={{ display: "flex" }}>
-              {/* eslint-disable-next-line */}
-              <img src="/img/op-icon-circle.svg" alt="ETH Icon" />
+              <Image src={opIconCircle} alt="Optimism Icon" />
               <div style={{ marginLeft: 8, alignItems: "center" }}>
                 <h3>Optimism</h3>
 
-                <div style={{ display: "flex" }}>
-                  {/* eslint-disable-next-line */}
-                  <img
-                    src="/img/control-panel-arrow.svg"
-                    alt="Arrow"
-                    style={{ marginRight: 8 }}
-                  />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div style={{ marginRight: 8 }}>
+                    <Image src={controlPanelArrow} alt="Arrow" />
+                  </div>
                   <h2>L2</h2>
                 </div>
               </div>
@@ -232,7 +225,7 @@ const Swapper = () => {
 };
 
 const MainContainer = styled.div`
-  margin: auto;
+  margin: 90px auto 0;
 `;
 
 const ErrorMessage = styled.div`

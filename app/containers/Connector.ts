@@ -29,7 +29,6 @@ const useConnector = () => {
     depositContract,
     setDepositContract,
   ] = useState<ethers.Contract | null>(null);
-  // const connectedWallet = useRecoilValue(walletState);
 
   useEffect(() => {
     const cachedWallet = window.localStorage.getItem(WALLET_STORAGE_KEY);

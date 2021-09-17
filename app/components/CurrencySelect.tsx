@@ -1,5 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
+import Image from "next/image";
+
+import sETHSymbol from "../public/img/sETH-symbol.svg";
+import controlPanelArrow from "../public/img/control-panel-arrow.svg";
 
 const GradientButtonWrapper = styled.div<{ isOpen: boolean }>`
   display: flex;
@@ -52,22 +56,10 @@ const GradientButton = styled.button<{ isOpen: boolean }>`
     text-transform: uppercase;
     margin: 0;
   }
+  .is-open {
+    transform: rotateX(180deg);
+  }
 `;
-
-const currencies = [
-  {
-    key: "sUSD",
-    name: "Synthetic US Dollars",
-  },
-  {
-    key: "sSNX",
-    name: "Synthetix Token",
-  },
-  {
-    key: "sEuro",
-    name: "Synthetic Euro",
-  },
-];
 
 // Note: The currency select feature is currently disabled (see line 85).
 // This is because this application only supports swapping ETH for now.
@@ -84,18 +76,17 @@ const CurrencySelect = () => {
     <>
       <GradientButtonWrapper isOpen={isOpen}>
         <GradientButton onClick={handleToggle} isOpen={isOpen} disabled>
-          {/* eslint-disable-next-line */}
-          <DropdownImage
-            isOpen={isOpen}
-            src="/img/control-panel-arrow.svg"
+          <Image
+            src={controlPanelArrow}
             alt="Conrol Panel Arrow"
+            width="35px"
+            {...(isOpen ? { className: "is-open" } : {})}
           />
           <div>
             <p className="sc">Select currency</p>
             <p>Ethereum (ETH)</p>
           </div>
-          {/* eslint-disable-next-line */}
-          <img src="/img/sETH-symbol.svg" alt="sUSD Symbol" />
+          <Image src={sETHSymbol} alt="sETH Symbol" />
         </GradientButton>
       </GradientButtonWrapper>
       {isOpen && (
@@ -159,11 +150,6 @@ const CurrencySearchBox = styled.input`
   &:focus {
     outline: none;
   }
-`;
-
-const DropdownImage = styled.img<{ isOpen: boolean }>`
-  ${({ isOpen }) => isOpen && `transform: rotateX(180deg);`}
-  width: 35px;
 `;
 
 export default CurrencySelect;

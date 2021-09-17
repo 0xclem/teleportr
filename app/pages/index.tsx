@@ -14,18 +14,16 @@ export default function Home() {
       </Head>
 
       <main>
-        <section className='teleportr-hero-section'>
+        <section className="teleportr-hero-section">
           <Header />
           <MainLayout>
             <Swapper />
           </MainLayout>
         </section>
-        <section className='teleportr-transactions-section'>
+        <section className="teleportr-transactions-section">
           <TransactionHistory />
         </section>
       </main>
-
-      {/* <footer></footer> */}
     </div>
   );
 }

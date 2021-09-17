@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import Link from "next/link";
+import Image from "next/image";
 
 import Connector from "../../containers/Connector";
 import { truncateAddress } from "../../utils/wallet";
+import teleportrLogo from "../../public/img/teleportr-logo.svg";
+import connectWalletArrow from "../../public/img/connect-wallet-arrow.svg";
 
 const Header = () => {
   const { connectWallet, walletAddress } = Connector.useContainer();
@@ -14,27 +17,21 @@ const Header = () => {
   return (
     <HeaderWrapper>
       <Link href="/" passHref>
-        {/* eslint-disable-next-line */}
-        <img
-          src="/img/teleportr-logo.svg"
-          alt="Teleportr Logo"
-          style={{ cursor: "pointer" }}
-        />
+        <Image src={teleportrLogo} alt="Teleportr Logo" className="logo-link" />
       </Link>
 
       <div>
-        {/*<Link href="/faq" passHref>
+        <Link href="/faq" passHref>
           <StyledLink>FAQ</StyledLink>
-				</Link>*/}
+        </Link>
         <Button onClick={handleConnectWallet}>
           {walletAddress ? (
             <>
               {`${truncateAddress(walletAddress)} MAINNET`}
-              {/* eslint-disable-next-line */}
-              <img
-                src="/img/connect-wallet-arrow.svg"
+              <Image
+                src={connectWalletArrow}
                 alt="Connect Wallet Arrow"
-                style={{ marginLeft: "6px" }}
+                className="connect-wallet-arrow"
               />
             </>
           ) : (
@@ -57,6 +54,10 @@ const HeaderWrapper = styled.div`
     justify-content: space-between;
     align-items: center;
   }
+
+  .logo-link {
+    cursor: pointer;
+  }
 `;
 
 const Button = styled.button`
@@ -72,14 +73,18 @@ const Button = styled.button`
   cursor: pointer;
   background-color: #cf1c8e;
   text-transform: uppercase;
+
+  div {
+    margin-left: 6px;
+  }
 `;
 
-// const StyledLink = styled.a`
-//   font-family: "GT America CM";
-//   font-size: 22px;
-//   color: #ffffff;
-//   margin-right: 28px;
-//   letter-spacing: 0.59px;
-// `;
+const StyledLink = styled.a`
+  font-family: "GT America CM";
+  font-size: 22px;
+  color: #ffffff;
+  margin-right: 28px;
+  letter-spacing: 0.59px;
+`;
 
 export default Header;
