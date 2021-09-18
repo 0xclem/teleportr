@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BigNumber, ethers } from "ethers";
+import Image from "next/image";
 
+import { contract as depositContractData } from "../../contracts/BridgeDeposit";
 import Connector from "../../containers/Connector";
+import CurrencySelect from "../../components/CurrencySelect";
+import controlPanelArrow from "../../public/img/control-panel-arrow.svg";
+import ethIconCircle from "../../public/img/eth-icon-circle.svg";
+import opIconCircle from "../../public/img/op-icon-circle.svg";
 
 const GAS_LIMIT_BUFFER = 1000;
-const ETHERSCAN_URL = "https://etherscan.io";
 
 type ContractInfo = {
   maxDepositAmount: number;
   maxBalance: number;
+  contractBalance: number;
   isEnabled: boolean;
 };
 
@@ -19,8 +25,15 @@ type EtherBalance = {
 };
 
 const Swapper = () => {
-  const { depositContract, wallet, provider, signer, providerL2, walletL2 } =
-    Connector.useContainer();
+  const {
+    depositContract,
+    walletAddress,
+    provider,
+    signer,
+    providerL2,
+    walletL2,
+    connectWallet,
+  } = Connector.useContainer();
   const [contractInfo, setContractInfo] = useState<ContractInfo | null>(null);
   const [ethBalance, setEthBalance] = useState<EtherBalance | null>(null);
   const [burnerWalletBalance, setBurnerWalletBalance] = useState<number | null>(
@@ -32,7 +45,13 @@ const Swapper = () => {
 
   useEffect(() => {
     const fetchContractData = async () => {
-      if (!wallet || !depositContract || !provider || !providerL2 || !walletL2)
+      if (
+        !walletAddress ||
+        !depositContract ||
+        !provider ||
+        !providerL2 ||
+        !walletL2
+      )
         return;
       try {
         const [
@@ -41,16 +60,19 @@ const Swapper = () => {
           canReceive,
           ethBalance,
           burnerWalletEthBalance,
+          contractBalance,
         ] = await Promise.all([
           depositContract.getMaxDepositAmount(),
           depositContract.getMaxBalance(),
           depositContract.getCanReceiveDeposit(),
-          provider.getBalance(wallet),
+          provider.getBalance(walletAddress),
           providerL2.getBalance(walletL2),
+          provider.getBalance(depositContractData.address),
         ]);
         setContractInfo({
           maxDepositAmount: maxDepositAmount / 1e18,
           maxBalance: maxBalance / 1e18,
+          contractBalance: Number(contractBalance) / 1e18,
           isEnabled: !!canReceive,
         });
         setEthBalance({
@@ -61,7 +83,7 @@ const Swapper = () => {
       } catch (e) {}
     };
     fetchContractData();
-  }, [wallet, depositContract, provider, providerL2, walletL2]);
+  }, [walletAddress, depositContract, provider, providerL2, walletL2]);
 
   useEffect(() => {
     const getGasLimit = async () => {
@@ -89,7 +111,7 @@ const Swapper = () => {
         setGasLimit(Number(gasEstimate) + GAS_LIMIT_BUFFER);
       } catch (e) {
         console.log(e);
-        setError(e.message);
+        setError(e?.error?.message ?? e.message);
       }
     };
     getGasLimit();
@@ -105,7 +127,7 @@ const Swapper = () => {
     if (!signer || !depositContract || !gasLimit || !provider) return;
     try {
       const gasPrice = await provider.getGasPrice();
-      const tx = await signer.sendTransaction({
+      await signer.sendTransaction({
         to: depositContract.address,
         value: ethers.utils.parseEther(depositAmount.toString()),
         gasLimit,
@@ -118,123 +140,262 @@ const Swapper = () => {
   };
 
   return (
-    <Wrapper>
-      <h1>Transfer ETH</h1>
-      <Data>
-        <DataElement>
-          {"Deposit contract: "}
-          {depositContract && depositContract.address ? (
-            <DataLink
-              href={`${ETHERSCAN_URL}/address/${depositContract.address}`}
-              target="_blank"
-            >
-              {depositContract.address}
-            </DataLink>
-          ) : (
-            "--"
-          )}
-        </DataElement>
-        <DataElement>
-          {`Max deposit amount: ${contractInfo?.maxDepositAmount ?? "--"} eth`}
-        </DataElement>
-        <DataElement>
-          {`Max contract balance: ${contractInfo?.maxBalance ?? "--"} eth`}
-        </DataElement>
-        <DataElement>
-          {`Deposits enabled: ${contractInfo?.isEnabled ?? "--"}`}
-        </DataElement>
-      </Data>
-      <RowCentered>
-        <Column>
-          <Balance>
-            Balance:
-            <BalanceButton
-              onClick={() =>
-                setDepositAmount(ethBalance?.balance?.toString() ?? "0")
-              }
-            >{` ${ethBalance?.balance ?? 0}`}</BalanceButton>
-          </Balance>
-          <Input
-            type="text"
-            placeholder="0"
-            value={depositAmount}
-            onChange={(e) => setDepositAmount(e.target.value)}
-          />
-          <DepositButton
-            onClick={handleDeposit}
-            disabled={!!error || !gasLimit}
+    <MainContainer>
+      <GradientBoxWrapper>
+        <GradientBox>
+          <BoxSplit>
+            <p>My balance: {ethBalance?.balance ?? 0} ETH</p>
+            <div style={{ display: "flex" }}>
+              <Image src={ethIconCircle} alt="ETH Icon" />
+              <div style={{ marginLeft: 8 }}>
+                <h3>Ethereum</h3>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div style={{ marginRight: 8 }}>
+                    <Image src={controlPanelArrow} alt="Arrow" />
+                  </div>
+                  <h2>L1</h2>
+                </div>
+              </div>
+            </div>
+          </BoxSplit>
+
+          <BoxSplit>
+            <p>
+              Contract balance:{" "}
+              {contractInfo?.contractBalance?.toFixed(2) ?? "--"}/
+              {contractInfo?.maxBalance ?? "--"} ETH
+            </p>
+            <div style={{ display: "flex" }}>
+              <Image src={opIconCircle} alt="Optimism Icon" />
+              <div style={{ marginLeft: 8, alignItems: "center" }}>
+                <h3>Optimism</h3>
+
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div style={{ marginRight: 8 }}>
+                    <Image src={controlPanelArrow} alt="Arrow" />
+                  </div>
+                  <h2>L2</h2>
+                </div>
+              </div>
+            </div>
+          </BoxSplit>
+        </GradientBox>
+        <MainForm>
+          <CurrencySelect />
+
+          <MainFormInputContainer>
+            <MainFormInputLabel>Deposit</MainFormInputLabel>
+            <MainFormInput
+              placeholder="0.05"
+              type="number"
+              value={depositAmount}
+              onChange={(e) => setDepositAmount(e.target.value)}
+            />
+          </MainFormInputContainer>
+
+          <MaxPortableButton
+            onClick={() => {
+              setDepositAmount(
+                contractInfo?.maxDepositAmount.toString() ?? "0.05"
+              );
+            }}
           >
-            {error || "Deposit"}
-          </DepositButton>
-        </Column>
-      </RowCentered>
-    </Wrapper>
+            Use Max Portable: {contractInfo?.maxDepositAmount ?? "--"}ETH
+          </MaxPortableButton>
+
+          <GradientButtonWrapper>
+            {walletAddress ? (
+              <TeleportButton
+                disabled={!!error || !gasLimit}
+                onClick={handleDeposit}
+              >
+                Teleport Currency
+              </TeleportButton>
+            ) : (
+              <GradientButton onClick={connectWallet}>
+                Connect Wallet
+              </GradientButton>
+            )}
+          </GradientButtonWrapper>
+        </MainForm>
+      </GradientBoxWrapper>
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+    </MainContainer>
   );
 };
 
-const Wrapper = styled.div`
-  padding: 20px 0;
+const MainContainer = styled.div`
+  margin: 90px auto 0;
 `;
-const Data = styled.div``;
-const DataLink = styled.a`
-  text-decoration: underline;
-  cursor: pointer;
+
+const ErrorMessage = styled.div`
+  color: #cf1c8e;
+  margin-top: 50px;
+  font-family: "GT America CM";
+  font-size: 17px;
 `;
-const DataElement = styled.div``;
-const RowCentered = styled.div`
+
+const GradientBoxWrapper = styled.div`
   display: flex;
   justify-content: center;
-  padding: 10px 0;
+  align-items: center;
+  height: 185px;
+  width: 90%;
+  background: linear-gradient(
+    90deg,
+    #170557 0%,
+    #00d1ff 0%,
+    #e12096 100%,
+    #00d1ff 100%
+  );
+  margin: 0 auto;
+  border-radius: 20px;
 `;
-const Input = styled.input`
-  border: 2px solid #25283d;
-  border-radius: 4px;
-  height: 38px;
-  text-align: right;
-  padding: 0 8px;
-  background: none;
+
+const GradientBox = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  grid-gap: 316px;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+
+  background: #060134;
+  background-clip: padding-box;
+  border-radius: 16px;
 `;
-const Column = styled.div`
+
+const MainForm = styled.div`
+  position: absolute;
   display: flex;
   flex-direction: column;
-  width: 300px;
+  justify-content: space-between;
+  align-items: center;
+  width: 316px;
+  height: 245px;
+  margin: 0px auto;
+  left: 0;
+  right: 0;
 `;
 
-const Balance = styled.div`
+const GradientButtonWrapper = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 2px;
-  font-size: 14px;
-`;
-
-const BalanceButton = styled.button`
-  margin-left: 4px;
-  text-align: right;
-  font-weight: bold;
-  outline: none;
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
-`;
-
-const DepositButton = styled.button`
-  margin-top: 8px;
-  border: 2px solid #25283d;
-  border-radius: 4px;
-  height: 38px;
-  padding: 0 20px;
-  outline: none;
-  background: lightgray;
-  cursor: pointer;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  font-family: "Fjalla One", sans-serif;
+  height: 60px;
+  background: linear-gradient(
+    90deg,
+    #170557 0%,
+    #4489ce 0%,
+    #944ba9 100%,
+    #00d1ff 100%
+  );
+  border-radius: 16px;
+`;
+
+const GradientButton = styled.button`
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  cursor: pointer;
+  background-color: #060134;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 17px;
+  text-transform: uppercase;
+  font-family: "GT America CM";
+  letter-spacing: 0.46px;
+
   &:disabled {
-    color: #25283d;
-    opacity: 0.4;
+    cursor: not-allowed;
+  }
+`;
+
+const TeleportButton = styled(GradientButton)`
+  background-color: rgba(0, 0, 0, 0.46);
+
+  &:disabled {
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+`;
+
+const MainFormInputContainer = styled.div`
+  background-color: #1c1541;
+  height: 48px;
+  border-radius: 6px;
+  padding: 0 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const MainFormInputLabel = styled.p`
+  text-transform: uppercase;
+  color: #ffffff;
+  font-size: 15px;
+  font-family: "GT America Bold";
+  letter-spacing: 0.41px;
+`;
+
+const MainFormInput = styled.input`
+  color: #ffffff;
+  font-size: 15px;
+  height: 100%;
+  border: none;
+  background-color: transparent;
+  text-align: right;
+  font-family: "GT America Bold";
+  letter-spacing: 0.41px;
+
+  ::placeholder {
+    color: #bcbcbc;
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const MaxPortableButton = styled.button`
+  background-color: transparent;
+  color: #00d0fe;
+  text-transform: uppercase;
+  font-size: 17px;
+  border: none;
+  cursor: pointer;
+  font-family: "GT America Condensed Bold";
+  letter-spacing: 0.41px;
+`;
+
+const BoxSplit = styled.div`
+  height: 100%;
+  padding-top: 10px;
+  padding-left: 18px;
+  color: #ffffff;
+
+  p {
+    font-family: "GT America CM";
+    letter-spacing: 0.43px;
+    font-size: 16px;
+    color: #9e9cb0;
+    text-align: center;
+  }
+
+  h3 {
+    text-transform: uppercase;
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+
+  h2 {
+    font-size: 42px;
+    margin: 4px 0;
   }
 `;
 
