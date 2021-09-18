@@ -14,25 +14,25 @@ export const initOnboard = (subscriptions: Subscriptions) => {
     walletSelect: {
       wallets: [
         { walletName: "metamask", preferred: true },
-        {
-          walletName: "ledger",
-          rpcUrl: INFURA_RPC_URL,
-          preferred: true,
-        },
-        {
-          walletName: "trezor",
-          appUrl: "https://www.synthetix.io",
-          email: "info@synthetix.io",
-          rpcUrl: INFURA_RPC_URL,
-          preferred: true,
-        },
-        {
-          walletName: "walletConnect",
-          rpc: { [MAINNET_NETWORK_ID]: INFURA_RPC_URL },
-          preferred: true,
-        },
-        { walletName: "trust", rpcUrl: INFURA_RPC_URL },
-        { walletName: "walletLink", rpcUrl: INFURA_RPC_URL, preferred: true },
+        // {
+        //   walletName: "ledger",
+        //   rpcUrl: INFURA_RPC_URL,
+        //   preferred: true,
+        // },
+        // {
+        //   walletName: "trezor",
+        //   appUrl: "https://www.synthetix.io",
+        //   email: "info@synthetix.io",
+        //   rpcUrl: INFURA_RPC_URL,
+        //   preferred: true,
+        // },
+        // {
+        //   walletName: "walletConnect",
+        //   rpc: { [MAINNET_NETWORK_ID]: INFURA_RPC_URL },
+        //   preferred: true,
+        // },
+        // { walletName: "trust", rpcUrl: INFURA_RPC_URL },
+        // { walletName: "walletLink", rpcUrl: INFURA_RPC_URL, preferred: true },
       ],
     },
     walletCheck: [
