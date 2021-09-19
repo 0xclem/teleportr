@@ -126,12 +126,10 @@ const Swapper = () => {
   const handleDeposit = async () => {
     if (!signer || !depositContract || !gasLimit || !provider) return;
     try {
-      const gasPrice = await provider.getGasPrice();
       await signer.sendTransaction({
         to: depositContract.address,
         value: ethers.utils.parseEther(depositAmount.toString()),
         gasLimit,
-        gasPrice,
       });
     } catch (e) {
       console.log(e);

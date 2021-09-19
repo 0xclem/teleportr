@@ -75,7 +75,7 @@ const TransactionHistory = () => {
       <TableRow>
         <div>Date & Time</div>
         <div>Confirmations</div>
-        <div>Trx Link</div>
+        <div>TXN Link</div>
       </TableRow>
       <div>
         {currentBlock && transactions && transactions.length > 0
