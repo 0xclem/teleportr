@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,13 +7,25 @@ import Connector from "../../containers/Connector";
 import { truncateAddress } from "../../utils/wallet";
 import teleportrLogo from "../../public/img/teleportr-logo.svg";
 import connectWalletArrow from "../../public/img/connect-wallet-arrow.svg";
+import { contract as depositContractData } from "../../contracts/BridgeDeposit";
+
+const ETHERSCAN_URL = "https://etherscan.io";
 
 const Header = () => {
-  const { connectWallet, walletAddress } = Connector.useContainer();
+  const { provider, connectWallet, walletAddress } = Connector.useContainer();
+  const [ensName, setEnsName] = useState<string | null>(null);
 
   const handleConnectWallet = async () => {
     connectWallet();
   };
+
+  useEffect(() => {
+    if (walletAddress) {
+      (async () => {
+        setEnsName((await provider?.lookupAddress(walletAddress)) ?? null);
+      })();
+    }
+  }, [provider, walletAddress]);
 
   return (
     <HeaderWrapper>
@@ -24,10 +37,16 @@ const Header = () => {
         <Link href="/faq" passHref>
           <StyledLink>FAQ</StyledLink>
         </Link>
+        <StyledLink
+          href={`${ETHERSCAN_URL}/address/${depositContractData.address}`}
+          target="_blank"
+        >
+          Contract
+        </StyledLink>
         <Button onClick={handleConnectWallet}>
           {walletAddress ? (
             <>
-              {`${truncateAddress(walletAddress)} MAINNET`}
+              {`${ensName ?? truncateAddress(walletAddress)} MAINNET`}
               <Image
                 src={connectWalletArrow}
                 alt="Connect Wallet Arrow"

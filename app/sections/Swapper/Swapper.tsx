@@ -187,7 +187,6 @@ const Swapper = () => {
             <MainFormInputLabel>Deposit</MainFormInputLabel>
             <MainFormInput
               placeholder="0.05"
-              type="number"
               value={depositAmount}
               onChange={(e) => setDepositAmount(e.target.value)}
             />
@@ -233,6 +232,7 @@ const ErrorMessage = styled.div`
   margin-top: 50px;
   font-family: "GT America CM";
   font-size: 17px;
+  text-align: center;
 `;
 
 const GradientBoxWrapper = styled.div`
