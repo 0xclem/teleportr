@@ -13,7 +13,7 @@ const faqData = [
   {
     title: "What is the current deposit limit?",
     description:
-      "0.05 ETH per transaction deposit limit. 4 ETH smart contract balance limit.",
+      "0.05 ETH per transaction deposit limit. 14 ETH smart contract balance limit.",
   },
   {
     title: "How long will it take to receive my funds on Optimism?",
