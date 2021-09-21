@@ -18,12 +18,8 @@ type Transaction = {
 };
 
 const TransactionHistory = () => {
-  const {
-    depositContract,
-    walletAddress,
-    provider,
-    providerL2,
-  } = Connector.useContainer();
+  const { depositContract, walletAddress, provider, providerL2 } =
+    Connector.useContainer();
   const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [currentBlock, setCurrentBlock] = useState<number | null>(null);
 
@@ -75,7 +71,7 @@ const TransactionHistory = () => {
       <TableRow>
         <div>Date & Time</div>
         <div>Confirmations</div>
-        <div>TXN Link</div>
+        <div>TX Link</div>
       </TableRow>
       <div>
         {currentBlock && transactions && transactions.length > 0
