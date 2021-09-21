@@ -126,12 +126,10 @@ const Swapper = () => {
   const handleDeposit = async () => {
     if (!signer || !depositContract || !gasLimit || !provider) return;
     try {
-      const gasPrice = await provider.getGasPrice();
       await signer.sendTransaction({
         to: depositContract.address,
         value: ethers.utils.parseEther(depositAmount.toString()),
         gasLimit,
-        gasPrice,
       });
     } catch (e) {
       console.log(e);
@@ -187,7 +185,6 @@ const Swapper = () => {
             <MainFormInputLabel>Deposit</MainFormInputLabel>
             <MainFormInput
               placeholder="0.05"
-              type="number"
               value={depositAmount}
               onChange={(e) => setDepositAmount(e.target.value)}
             />
@@ -233,6 +230,7 @@ const ErrorMessage = styled.div`
   margin-top: 50px;
   font-family: "GT America CM";
   font-size: 17px;
+  text-align: center;
 `;
 
 const GradientBoxWrapper = styled.div`
