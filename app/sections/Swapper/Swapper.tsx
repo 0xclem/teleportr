@@ -147,7 +147,7 @@ const Swapper = () => {
       <GradientBoxWrapper>
         <GradientBox>
           <BoxSplit>
-            <p>My balance: {ethBalance?.balance ?? 0} ETH</p>
+            <p>My balance: {ethBalance?.balance.toFixed(8) ?? 0} ETH</p>
             <div style={{ display: "flex" }}>
               <Image src={ethIconCircle} alt="ETH Icon" />
               <div style={{ marginLeft: 8 }}>

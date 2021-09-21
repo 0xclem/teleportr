@@ -18,8 +18,12 @@ type Transaction = {
 };
 
 const TransactionHistory = () => {
-  const { depositContract, walletAddress, provider, providerL2 } =
-    Connector.useContainer();
+  const {
+    depositContract,
+    walletAddress,
+    provider,
+    providerL2,
+  } = Connector.useContainer();
   const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [currentBlock, setCurrentBlock] = useState<number | null>(null);
 
@@ -70,36 +74,38 @@ const TransactionHistory = () => {
       )}
       <TableRow>
         <div>Date & Time</div>
-        <div>Confirmations</div>
-        <div>TX Link</div>
+        <CenteredRow>Confirmations</CenteredRow>
+        <CenteredRow>TX Link</CenteredRow>
       </TableRow>
       <div>
         {currentBlock && transactions && transactions.length > 0
-          ? transactions.map((tx) => {
-              return (
-                <TableBodyRow key={tx.hash}>
-                  <div>
-                    {format(new Date(tx.timestamp), "dd/MM/Y h:mm aaa")}
-                  </div>
-                  <div>
-                    {`${
-                      currentBlock - tx.blockNumber > CONFIRMATIONS
-                        ? CONFIRMATIONS
-                        : currentBlock - tx.blockNumber
-                    }/${CONFIRMATIONS}`}
-                  </div>
-                  <div>
-                    <Link
-                      href={`${ETHERSCAN_URL}/tx/${tx.hash}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {truncateAddress(tx.hash || "")}
-                    </Link>
-                  </div>
-                </TableBodyRow>
-              );
-            })
+          ? transactions
+              .sort((a, b) => b.timestamp - a.timestamp)
+              .map((tx) => {
+                return (
+                  <TableBodyRow key={tx.hash}>
+                    <div>
+                      {format(new Date(tx.timestamp), "dd/MM/Y h:mm aaa")}
+                    </div>
+                    <CenteredRow>
+                      {`${
+                        currentBlock - tx.blockNumber > CONFIRMATIONS
+                          ? CONFIRMATIONS
+                          : currentBlock - tx.blockNumber
+                      }/${CONFIRMATIONS}`}
+                    </CenteredRow>
+                    <CenteredRow>
+                      <Link
+                        href={`${ETHERSCAN_URL}/tx/${tx.hash}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {truncateAddress(tx.hash || "")}
+                      </Link>
+                    </CenteredRow>
+                  </TableBodyRow>
+                );
+              })
           : walletAddress && (
               <ConnectText>No transactions for this wallet yet.</ConnectText>
             )}
@@ -148,6 +154,11 @@ const TableRow = styled.div`
     color: #00d0fe;
     margin-bottom: 12px;
   }
+`;
+
+const CenteredRow = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const TableBodyRow = styled.div`
