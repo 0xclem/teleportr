@@ -98,6 +98,11 @@ const Swapper = () => {
       try {
         setError(null);
         if (Number(depositAmount) === 0) throw new Error("Incorrect amount");
+        if (Number(depositAmount) > (ethBalance?.balance ?? 0)) {
+          throw new Error(
+            "Amount of ETH selected to Teleport is more than what is available in your wallet"
+          );
+        }
         if (burnerWalletBalance === 0)
           throw new Error("Burner wallet has a low balance");
         if (Number(depositAmount) > contractInfo.maxDepositAmount)

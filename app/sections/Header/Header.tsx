@@ -46,7 +46,7 @@ const Header = () => {
         <Button onClick={handleConnectWallet}>
           {walletAddress ? (
             <>
-              {`${ensName ?? truncateAddress(walletAddress)} MAINNET`}
+              {ensName ?? truncateAddress(walletAddress)}
               <Image
                 src={connectWalletArrow}
                 alt="Connect Wallet Arrow"
@@ -92,9 +92,11 @@ const Button = styled.button`
   cursor: pointer;
   background-color: #cf1c8e;
   text-transform: uppercase;
+  padding-left: 4px;
+  padding-right: 4px;
 
   div {
-    margin-left: 6px;
+    margin-left: 10px;
   }
 `;
 
