@@ -1,7 +1,63 @@
+@font-face {
+  font-family: "GT America CM";
+  src: url("/fonts/GT_America_Condensed_Medium/GT_America_Condensed_Medium.eot");
+  src: url("/fonts/GT_America_Condensed_Medium/GT_America_Condensed_Medium.eot?#iefix")
+      format("embedded-opentype"),
+    url("/fonts/GT_America_Condensed_Medium/GT_America_Condensed_Medium.woff2")
+      format("woff2"),
+    url("/fonts/GT_America_Condensed_Medium/GT_America_Condensed_Medium.woff")
+      format("woff"),
+    url("/fonts/GT_America_Condensed_Medium/GT_America_Condensed_Medium.ttf")
+      format("truetype"),
+    url("/fonts/GT_America_Condensed_Medium/GT_America_Condensed_Medium.svg")
+      format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GT America EB";
+  src: url("/fonts/GT_America_Expanded_Bold/GT_America_Expanded_Bold.otf");
+  src: url("/fonts/GT_America_Expanded_Bold/GT_America_Expanded_Bold.eot?#iefix")
+      format("embedded-opentype"),
+    url("/fonts/GT_America_Expanded_Bold/GT_America_Expanded_Bold.woff2")
+      format("woff2"),
+    url("/fonts/GT_America_Expanded_Bold/GT_America_Expanded_Bold.eot")
+      format("woff"),
+    url("/fonts/GT_America_Expanded_Bold/GT_America_Expanded_Bold.eot")
+      format("truetype"),
+    url("/fonts/GT_America_Expanded_Bold/GT_America_Expanded_Bold.eot")
+      format("svg");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GT America Bold";
+  src: url("/fonts/GT_America_Bold/GT_America_Bold.eot?#iefix")
+      format("embedded-opentype"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.woff2")
+      format("woff2"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.woff")
+      format("woff"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.ttf")
+      format("truetype"),
+    url("/fonts/GT_America_Bold/GT_America_Bold.svg")
+      format("svg");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GT America Condensed Bold";
+  src: url("/fonts/GT_America_Condensed_Bold.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
 html,
 body {
   margin: 0 auto;
-  background-color: #efd9ce;
   font-family: "Fjalla One", sans-serif;
 }
 
@@ -12,4 +68,46 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "GT America Bold";
+}
+
+.teleportr-hero-section {
+  position: relative;
+  z-index: 0;
+  background-image: url("/img/teleportr-landing-hero-bg.jpg");
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: -1px;
+  height: 105vh;
+}
+
+.teleportr-transactions-section {
+  position: relative;
+  z-index: 0;
+  background-color: #20011d;
+  background-image: url("/img/footer-bg.svg");
+  background-position: bottom center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 105vh;
+}
+
+.faq-section {
+  position: relative;
+  z-index: 0;
+  background-image: url("/img/teleportr-landing-hero-bg.jpg");
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: -1px;
+  height: 100vh;
 }
