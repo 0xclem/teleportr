@@ -1,6 +1,11 @@
 module.exports = {
-	images: {
-		loader: 'imgix',
-		path: '/',
+	async redirects() {
+		return [
+			{
+				source: '/',
+				destination: 'https://portr.xyz',
+				permanent: true,
+			},
+		];
 	},
 };
