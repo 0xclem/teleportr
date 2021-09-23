@@ -1,12 +1,6 @@
 module.exports = {
-	async redirects() {
-		return [
-			{
-				source: '/',
-				destination: 'https://portr.xyz',
-				permanent: true,
-			},
-		];
+	async rewrites() {
+		return [{ source: '/', destination: 'https://portr.xyz' }];
 	},
 	images: {
 		loader: 'imgix',
