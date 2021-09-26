@@ -78,8 +78,9 @@ const TransactionHistory = () => {
         <CenteredRow>TX Link</CenteredRow>
       </TableRow>
       <div>
-        {currentBlock && transactions && transactions.length > 0
-          ? transactions
+        {currentBlock && transactions && transactions.length > 0 ? (
+          <>
+            {transactions
               .sort((a, b) => b.timestamp - a.timestamp)
               .map((tx) => {
                 return (
@@ -105,10 +106,16 @@ const TransactionHistory = () => {
                     </CenteredRow>
                   </TableBodyRow>
                 );
-              })
-          : walletAddress && (
-              <ConnectText>No transactions for this wallet yet.</ConnectText>
-            )}
+              })}
+            <RefreshButton onClick={fetchTransactions}>
+              Refresh Transactions
+            </RefreshButton>
+          </>
+        ) : (
+          walletAddress && (
+            <ConnectText>No transactions for this wallet yet.</ConnectText>
+          )
+        )}
       </div>
     </div>
   );
@@ -184,6 +191,21 @@ const TableBodyRow = styled.div`
 const Link = styled.a`
   font-weight: bold;
   text-decoration: underline;
+  cursor: pointer;
+`;
+
+const RefreshButton = styled.button`
+  display: block;
+  font-size: 17px;
+  color: #ffffff;
+  margin: 10px auto;
+  height: 50px;
+  background-color: #cf1c8e;
+  font-family: Inter;
+  border: none;
+  border-radius: 25px;
+  padding-left: 20px;
+  padding-right: 20px;
   cursor: pointer;
 `;
 

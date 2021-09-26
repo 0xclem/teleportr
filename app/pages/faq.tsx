@@ -1,10 +1,20 @@
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 
 import Header from "../sections/Header";
 import FAQWidget from "../components/FAQWidget";
+import Connector from "../containers/Connector";
+import { contract as depositContractData } from "../contracts/BridgeDeposit";
 
-const faqData = [
+type ContractInfo = {
+  maxDepositAmount: number;
+  maxBalance: number;
+  contractBalance: number;
+  isEnabled: boolean;
+};
+
+const faqData = (contractInfo: ContractInfo | null) => [
   {
     title: "Why is there a deposit limit?",
     description:
@@ -12,8 +22,11 @@ const faqData = [
   },
   {
     title: "What is the current deposit limit?",
-    description:
-      "0.05 ETH per transaction deposit limit. 14 ETH smart contract balance limit.",
+    description: `${
+      contractInfo?.maxDepositAmount ?? "--"
+    } ETH per transaction deposit limit. ${
+      contractInfo?.maxBalance ?? "--"
+    } ETH smart contract balance limit.`,
   },
   {
     title: "How long will it take to receive my funds on Optimism?",
@@ -42,6 +55,35 @@ const faqData = [
 ];
 
 const FAQ = () => {
+  const { depositContract, provider } = Connector.useContainer();
+  const [contractInfo, setContractInfo] = useState<ContractInfo | null>(null);
+
+  useEffect(() => {
+    const fetchContractData = async () => {
+      if (!depositContract || !provider) return;
+      try {
+        const [
+          maxDepositAmount,
+          maxBalance,
+          canReceive,
+          contractBalance,
+        ] = await Promise.all([
+          depositContract.getMaxDepositAmount(),
+          depositContract.getMaxBalance(),
+          depositContract.getCanReceiveDeposit(),
+          provider.getBalance(depositContractData.address),
+        ]);
+        setContractInfo({
+          maxDepositAmount: maxDepositAmount / 1e18,
+          maxBalance: maxBalance / 1e18,
+          contractBalance: Number(contractBalance) / 1e18,
+          isEnabled: !!canReceive,
+        });
+      } catch (e) {}
+    };
+    fetchContractData();
+  }, [depositContract, provider]);
+
   return (
     <div>
       <Head>
@@ -55,7 +97,7 @@ const FAQ = () => {
 
           <FAQWrapper>
             <h1>FAQ</h1>
-            {faqData.map((f) => (
+            {faqData(contractInfo).map((f) => (
               <FAQWidget key={f.title} {...f} />
             ))}
           </FAQWrapper>
