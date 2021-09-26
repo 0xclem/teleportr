@@ -126,6 +126,7 @@ const Swapper = () => {
     depositContract,
     contractInfo,
     burnerWalletBalance,
+    ethBalance?.balance,
   ]);
 
   const handleDeposit = async () => {
