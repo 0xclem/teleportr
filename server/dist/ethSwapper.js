@@ -15,17 +15,20 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processLayerOneTransactionsToL2 = exports.checkLayerOneConfirmations = exports.getLayerOneTransfers = void 0;
 const ethers_1 = require("ethers");
 const BridgeDeposit_1 = require("./contracts/BridgeDeposit");
 const mongoConnector_1 = require("./mongoConnector");
+const GasPriceOracle_1 = __importDefault(require("./contracts/GasPriceOracle"));
 const NETWORK = process.env.NETWORK || "mainnet";
 const OVM_JSON_RPC_URL = process.env.OVM_JSON_RPC_URL || "https://mainnet.optimism.io";
-const START_BLOCK = Number(process.env.START_BLOCK || 26140558);
+const START_BLOCK = Number(process.env.START_BLOCK || 13634050);
 const DB_COLLECTION = "transfers";
 const CONFIRMATIONS = 21;
-const OVM_GAS_PRICE = 0.015;
 let providerL1 = null;
 const getProviderL1 = () => {
     if (!providerL1) {
@@ -58,7 +61,7 @@ exports.getLayerOneTransfers = () => __awaiter(void 0, void 0, void 0, function*
                 transactionHash: l.transactionHash,
                 blockNumber: l.blockNumber,
                 wallet: args.emitter,
-                amount: args.amount / 1e18,
+                amount: args.amount.toString(),
                 isConfirmed: false,
                 isProcessed: false,
             };
@@ -118,30 +121,39 @@ exports.processLayerOneTransactionsToL2 = () => __awaiter(void 0, void 0, void 0
         }
         const providerL2 = new ethers_1.ethers.providers.JsonRpcProvider(OVM_JSON_RPC_URL);
         const wallet = new ethers_1.ethers.Wallet(process.env.LAYER_2_WALLET_PK, providerL2);
+        const GasPriceOracleContract = new ethers_1.ethers.Contract(GasPriceOracle_1.default.address, GasPriceOracle_1.default.abi, providerL2);
         const currentNonce = yield providerL2.getTransactionCount(wallet.address);
         let index = 0;
         try {
             for (var transactionsToProcess_1 = __asyncValues(transactionsToProcess), transactionsToProcess_1_1; transactionsToProcess_1_1 = yield transactionsToProcess_1.next(), !transactionsToProcess_1_1.done;) {
                 const transaction = transactionsToProcess_1_1.value;
+                const transactionAmount = ethers_1.ethers.BigNumber.from(transaction.amount);
                 const transactionParams = {
                     to: transaction.wallet,
-                    value: ethers_1.ethers.utils.parseEther(transaction.amount.toString()),
-                    gasPrice: ethers_1.ethers.utils.parseUnits(OVM_GAS_PRICE.toString(), "gwei"),
+                    value: transactionAmount,
                     nonce: currentNonce + index,
                 };
-                const gasEstimate = yield wallet.estimateGas(transactionParams);
-                const txFee = (Number(gasEstimate) * OVM_GAS_PRICE) / 1e9;
-                const amountToTransfer = transaction.amount - txFee;
-                if (amountToTransfer > 0) {
-                    const tx = yield wallet.sendTransaction(Object.assign(Object.assign({}, transactionParams), { value: ethers_1.ethers.utils.parseEther(amountToTransfer.toFixed(18)), gasLimit: Number(gasEstimate) }));
+                const [gasEstimate, gasPrice] = yield Promise.all([
+                    wallet.estimateGas(transactionParams),
+                    providerL2.getGasPrice(),
+                ]);
+                const l1Fee = yield GasPriceOracleContract.getL1Fee(ethers_1.ethers.utils.serializeTransaction(Object.assign(Object.assign({}, transactionParams), { gasLimit: gasEstimate, gasPrice })));
+                const transactionFee = gasPrice.mul(gasEstimate).add(l1Fee);
+                let amountToTransfer = null;
+                if (transactionAmount.gt(transactionFee)) {
+                    amountToTransfer = ethers_1.ethers.BigNumber.from(transaction.amount).sub(transactionFee);
+                    const tx = yield wallet.sendTransaction(Object.assign(Object.assign({}, transactionParams), { value: amountToTransfer, gasLimit: gasEstimate, gasPrice }));
                     console.log(`Transaction ${tx.hash} for ${transaction.wallet} broadcasted`);
                     yield tx.wait();
+                }
+                else {
+                    console.log("Amount is too low. Transaction cannot be processed");
                 }
                 yield mongoConnector_1.getDB()
                     .collection(DB_COLLECTION)
                     .updateOne({ _id: transaction._id }, { $set: { isProcessed: true } });
-                console.log(amountToTransfer > 0
-                    ? `Transaction processed for wallet ${transaction.wallet} for a ${txFee} ether fee`
+                console.log(!!amountToTransfer
+                    ? `Transaction processed for wallet ${transaction.wallet}. Amount: ${Number(transactionAmount) / 1e18} ether minus a fee of ${Number(transactionFee) / 1e18} ether`
                     : `Transaction cancelled for wallet ${transaction.wallet} because of low amount`);
                 index += 1;
             }
