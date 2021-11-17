@@ -2,22 +2,22 @@ import { ethers } from "ethers";
 import { bridgeDeposit } from "./contracts/BridgeDeposit";
 import { getDB } from "./mongoConnector";
 import { ObjectID } from "mongodb";
+import gasPriceOracleContract from "./contracts/GasPriceOracle";
 
 const NETWORK = process.env.NETWORK || "mainnet";
 const OVM_JSON_RPC_URL =
   process.env.OVM_JSON_RPC_URL || "https://mainnet.optimism.io";
 
-const START_BLOCK = Number(process.env.START_BLOCK || 26140558);
+const START_BLOCK = Number(process.env.START_BLOCK || 13634050);
 const DB_COLLECTION = "transfers";
 
 const CONFIRMATIONS = 21;
-const OVM_GAS_PRICE = 0.015;
 
 type TransactionRecord = {
   transactionHash: string;
   blockNumber: number;
   wallet: string;
-  amount: number;
+  amount: string;
   isConfirmed: boolean;
   isProcessed: boolean;
   _id?: ObjectID;
@@ -70,7 +70,7 @@ export const getLayerOneTransfers = async () => {
           transactionHash: l.transactionHash,
           blockNumber: l.blockNumber,
           wallet: args.emitter,
-          amount: args.amount / 1e18,
+          amount: args.amount.toString(),
           isConfirmed: false,
           isProcessed: false,
         };
@@ -140,30 +140,54 @@ export const processLayerOneTransactionsToL2 = async () => {
 
     const providerL2 = new ethers.providers.JsonRpcProvider(OVM_JSON_RPC_URL);
     const wallet = new ethers.Wallet(process.env.LAYER_2_WALLET_PK, providerL2);
+    const GasPriceOracleContract = new ethers.Contract(
+      gasPriceOracleContract.address,
+      gasPriceOracleContract.abi,
+      providerL2
+    );
 
     const currentNonce = await providerL2.getTransactionCount(wallet.address);
     let index = 0;
     for await (const transaction of transactionsToProcess) {
+      const transactionAmount = ethers.BigNumber.from(transaction.amount);
       const transactionParams = {
         to: transaction.wallet,
-        value: ethers.utils.parseEther(transaction.amount.toString()),
-        gasPrice: ethers.utils.parseUnits(OVM_GAS_PRICE.toString(), "gwei"),
+        value: transactionAmount,
         nonce: currentNonce + index,
       };
-      const gasEstimate = await wallet.estimateGas(transactionParams);
-      const txFee = (Number(gasEstimate) * OVM_GAS_PRICE) / 1e9;
-      const amountToTransfer = transaction.amount - txFee;
 
-      if (amountToTransfer > 0) {
+      const [gasEstimate, gasPrice] = await Promise.all([
+        wallet.estimateGas(transactionParams),
+        providerL2.getGasPrice(),
+      ]);
+
+      const l1Fee = await GasPriceOracleContract.getL1Fee(
+        ethers.utils.serializeTransaction({
+          ...transactionParams,
+          gasLimit: gasEstimate,
+          gasPrice,
+        })
+      );
+
+      const transactionFee = gasPrice.mul(gasEstimate).add(l1Fee);
+      let amountToTransfer = null;
+
+      if (transactionAmount.gt(transactionFee)) {
+        amountToTransfer = ethers.BigNumber.from(transaction.amount).sub(
+          transactionFee
+        );
         const tx = await wallet.sendTransaction({
           ...transactionParams,
-          value: ethers.utils.parseEther(amountToTransfer.toFixed(18)),
-          gasLimit: Number(gasEstimate),
+          value: amountToTransfer,
+          gasLimit: gasEstimate,
+          gasPrice,
         });
         console.log(
           `Transaction ${tx.hash} for ${transaction.wallet} broadcasted`
         );
         await tx.wait();
+      } else {
+        console.log("Amount is too low. Transaction cannot be processed");
       }
 
       await getDB()
@@ -171,8 +195,10 @@ export const processLayerOneTransactionsToL2 = async () => {
         .updateOne({ _id: transaction._id }, { $set: { isProcessed: true } });
 
       console.log(
-        amountToTransfer > 0
-          ? `Transaction processed for wallet ${transaction.wallet} for a ${txFee} ether fee`
+        !!amountToTransfer
+          ? `Transaction processed for wallet ${transaction.wallet}. Amount: ${
+              Number(transactionAmount) / 1e18
+            } ether minus a fee of ${Number(transactionFee) / 1e18} ether`
           : `Transaction cancelled for wallet ${transaction.wallet} because of low amount`
       );
       index += 1;
