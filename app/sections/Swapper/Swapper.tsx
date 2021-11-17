@@ -11,6 +11,7 @@ import ethIconCircle from "../../public/img/eth-icon-circle.svg";
 import opIconCircle from "../../public/img/op-icon-circle.svg";
 
 const GAS_LIMIT_BUFFER = 1000;
+const MIN_DEPOSIT_AMOUNT = 0.002;
 
 type ContractInfo = {
   maxDepositAmount: number;
@@ -107,6 +108,10 @@ const Swapper = () => {
           throw new Error("Burner wallet has a low balance");
         if (Number(depositAmount) > contractInfo.maxDepositAmount)
           throw new Error("Amount higher than deposit limit");
+        if (Number(depositAmount) < MIN_DEPOSIT_AMOUNT)
+          throw new Error(
+            `Amount lower than minimum deposit amount (${MIN_DEPOSIT_AMOUNT} ETH)`
+          );
 
         const gasEstimate = await signer.estimateGas({
           to: depositContract.address,
