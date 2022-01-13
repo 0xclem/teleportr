@@ -1,10 +1,10 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "/Users/clementbalestrat/Workspace/optimism-bridge/contracts/BridgeDeposit.sol": {
-      "lastModificationDate": 1627782819900,
-      "contentHash": "60e6682c6dbe247742978a87547bd696",
-      "sourceName": "contracts/BridgeDeposit.sol",
+    "/Users/clementbalestrat/Workspace/gDAO/teleportr/contracts/TeleportrDeposit.sol": {
+      "lastModificationDate": 1642117449683,
+      "contentHash": "d3ea68ce4b9d8b4c4962e1aa80b681a3",
+      "sourceName": "contracts/TeleportrDeposit.sol",
       "solcConfig": {
         "version": "0.7.3",
         "settings": {
@@ -32,109 +32,8 @@
         "0.7.3"
       ],
       "artifacts": [
-        "BridgeDeposit"
-      ]
-    },
-    "/Users/clementbalestrat/Workspace/optimism-bridge/node_modules/@openzeppelin/contracts/math/SafeMath.sol": {
-      "lastModificationDate": 1626574533848,
-      "contentHash": "e03e12206057e809eb76c5f681170c32",
-      "sourceName": "@openzeppelin/contracts/math/SafeMath.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.6.0 <0.8.0"
-      ],
-      "artifacts": [
-        "SafeMath"
-      ]
-    },
-    "/Users/clementbalestrat/Workspace/optimism-bridge/node_modules/hardhat/console.sol": {
-      "lastModificationDate": 1626349555553,
-      "contentHash": "cc4777addd464ea56fa35b1c45df0591",
-      "sourceName": "hardhat/console.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.4.22 <0.9.0"
-      ],
-      "artifacts": [
-        "console"
-      ]
-    },
-    "/Users/clementbalestrat/Workspace/teleportr/contracts/BridgeDeposit.sol": {
-      "lastModificationDate": 1629261155800,
-      "contentHash": "60e6682c6dbe247742978a87547bd696",
-      "sourceName": "contracts/BridgeDeposit.sol",
-      "solcConfig": {
-        "version": "0.7.3",
-        "settings": {
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "0.7.3"
-      ],
-      "artifacts": [
-        "BridgeDeposit"
+        "IL1StandardBridge",
+        "TeleportrDeposit"
       ]
     }
   }
