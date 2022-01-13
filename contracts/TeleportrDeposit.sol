@@ -52,8 +52,7 @@ contract TeleportrDeposit {
         require(amount > 0, "Contract balance should be greater than zero");
         require(l2Depositor != address(0), "L2 depositor address should not be null");
         require(l1StandardBridge != address(0), "L1 standard bridge address should not be null");
-        payable(l1StandardBridge).transfer(amount);
-        IL1StandardBridge(l1StandardBridge).depositETHTo(l2Depositor, _l2Gas, _data);
+        IL1StandardBridge(l1StandardBridge).depositETHTo{value: amount}(l2Depositor, _l2Gas, _data);
         emit BalanceBridged(l2Depositor, amount);
     }
 
